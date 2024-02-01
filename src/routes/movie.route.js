@@ -5,6 +5,7 @@ const router=express.Router()
 const movieController=require('../controllers/movie.controller')
 const authMiddleware = require('../middlewares/auth.middleware');
 router.get('/categories',movieController.getCategories)
+router.get('/:movieId/actors',authMiddleware.checkLogin,movieController.getActors)
 router.get('/languages',movieController.getLanguages)
 router.get('/formats',movieController.getFormats)
 router.get('/countries',movieController.getCountries)
