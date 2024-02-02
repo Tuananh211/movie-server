@@ -8,9 +8,11 @@ const scheduleRoute = require('./schedule.route');
 const authRoute = require('./auth.route');
 const authMiddleware = require('../middlewares/auth.middleware');
 const stripeRoute = require('./stripe.route');
+const uploadRoute= require('./upload.route')
 
 const initRoute = app => {
   app.use('/movies', movieRoute);
+  app.use('/upload',authMiddleware.checkLogin,uploadRoute);
   app.use('/actor', authMiddleware.checkLogin,actorRoute)
   app.use('/cinemas', authMiddleware.checkLogin, cinemaRoute);
   app.use('/products', authMiddleware.checkLogin, productRoute);
