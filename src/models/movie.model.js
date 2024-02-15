@@ -14,6 +14,21 @@ class Movie {
       );
     });
   }
+  static async getMoviesByCategoryId(categoryId){
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director JOIN movie_category mv on m.id = mv.movie_id where mv.category_id=? ',
+        [categoryId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
   static async getActorByMovieID(movieId) {
     return new Promise((resolve, reject) => {
       connection.query(
