@@ -3,7 +3,7 @@ class Movie {
   static async getMovies() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director',
+        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,m.primaryThumbnail as trailer,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director',
         (err, results) => {
           if (err) {
             reject(err);
