@@ -9,6 +9,15 @@ exports.getCinemas = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getCinemasByMovieId = async (req, res) => {
+  const { movieId } = req.params;
+  try {
+    const cinemas = await Cinema.getCinemasByMovieId(movieId);
+    res.json(cinemas);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 exports.getCinemaById = async (req, res) => {
   const { cinemaId } = req.params;
   try {

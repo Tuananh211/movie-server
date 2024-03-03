@@ -14,6 +14,21 @@ class Cinema {
       );
     });
   }
+  static async getCinemasByMovieId(movieId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT cinema.id,cinema.name,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id join room r on r.cinema_id= cinema.id join schedule sh on sh.room_id=r.id where sh.movie_id = ? AND sh.premiere >= CURRENT_DATE()',
+        [movieId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
 
   static async getCinemaById(cinemaId) {
     return new Promise((resolve, reject) => {
