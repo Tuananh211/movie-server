@@ -21,6 +21,19 @@ class Schedule {
       });
     });
   }
+  static async getScheduleByCinemaId(movie_id,day) {
+    return new Promise((resolve, reject) => {
+      const query ='SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id = ? AND DATE(schedule.premiere) = ? ORDER BY schedule.premiere DESC';
+      const params=[movie_id,day]
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+    });
+  }
 
   static async getSchedulesOfMovieByDate(day, movieId) {
     return new Promise((resolve, reject) => {
