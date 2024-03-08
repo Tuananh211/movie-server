@@ -3,7 +3,7 @@ class Cinema {
   static async getCinemas() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT cinema.id,cinema.name,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id',
+        'SELECT cinema.id,cinema.name,city.name as city,cinema.address,cinema.phone,cinema.urlImage FROM cinema JOIN city ON cinema.city_id=city.id',
         (err, results) => {
           if (err) {
             reject(err);

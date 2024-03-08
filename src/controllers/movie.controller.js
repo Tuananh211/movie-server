@@ -17,6 +17,15 @@ exports.getMoviesByName = async (req, res, next) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getMoviesHasSchedule = async (req, res, next) => {
+  const {cinemaId,day}= req.params;
+  try {
+    const results = await Movie.getMoviesHasSchedule(cinemaId,day);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 exports.getMoviesByCategoryId= async (req, res) => {
   const {categoryId} = req.params;
   try {

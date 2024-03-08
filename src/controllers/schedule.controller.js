@@ -18,6 +18,15 @@ exports.getSchedules = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getSchedulesByCinemaId = async (req, res) => {
+  const { cinemaId,movieId,day} = req.query;
+  try {
+    const results = await Schedule.getScheduleByCinemaId(cinemaId,movieId,day);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 exports.getSchedulesOfMovieByDate = async (req, res) => {
   const { day, movieId } = req.query;
