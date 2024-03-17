@@ -27,7 +27,7 @@ router.get(
   scheduleController.getSchedulesOfMovieByDate
 );
 router.get('/:scheduleId', scheduleController.getScheduleById);
-router.get('/scheduleCinema',authMiddleware.checkLogin, scheduleController.getSchedulesByCinemaId);
+router.get('/getScheduleCinema', scheduleController.getSchedulesByCinemaId);
 router.post('/', authMiddleware.checkAdmin, scheduleController.createSchedule);
 router.put('/', authMiddleware.checkAdmin, scheduleController.updateSchedule);
 router.get('/', scheduleController.getSchedules);

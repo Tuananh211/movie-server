@@ -18,7 +18,7 @@ exports.getMoviesByName = async (req, res, next) => {
   }
 };
 exports.getMoviesHasSchedule = async (req, res, next) => {
-  const {cinemaId,day}= req.params;
+  const {cinemaId,day}= req.query;
   try {
     const results = await Movie.getMoviesHasSchedule(cinemaId,day);
     res.json(results);

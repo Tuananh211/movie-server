@@ -21,10 +21,11 @@ class Schedule {
       });
     });
   }
-  static async getScheduleByCinemaId(cinema_id,movie_id,day) {
+  static async getScheduleByCinemaId(cinemaId,movieId,day) {
     return new Promise((resolve, reject) => {
-      const query ='SELECT schedule.*,room.name as room FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id= ? AND schedule.movie_id = ? AND DATE(schedule.premiere) = ? ORDER BY schedule.premiere DESC';
-      const params=[cinema_id,movie_id,day]
+      const query =
+      'SELECT schedule.*,room.name as room FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id= ? AND schedule.movie_id = ? AND DATE(schedule.premiere) = ? ORDER BY schedule.premiere DESC';
+      const params=[cinemaId,movieId,day]
       connection.query(query, params, (err, results) => {
         if (err) {
           reject(err);
