@@ -20,7 +20,6 @@ exports.getSchedules = async (req, res) => {
 };
 exports.getSchedulesByCinemaId = async (req, res) => {
   const { cinemaId, movieId, day } = req.query;
-  console.log(cinemaId)
   try {
     const results = await Schedule.getScheduleByCinemaId(cinemaId, movieId, day);
     res.json(results);

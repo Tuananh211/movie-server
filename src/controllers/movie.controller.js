@@ -17,7 +17,7 @@ exports.getMoviesByName = async (req, res, next) => {
     res.status(500).json({ message: err.message });
   }
 };
-exports.getMoviesHasSchedule = async (req, res, next) => {
+exports.getMoviesOfSchedule = async (req, res, next) => {
   const {cinemaId,day}= req.query;
   try {
     const results = await Movie.getMoviesHasSchedule(cinemaId,day);
