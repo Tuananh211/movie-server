@@ -14,21 +14,89 @@ class Movie {
       );
     });
   }
-  static async getMoviesHasSchedule(cinemaId,day){
+  static async getMoviesHasSchedule(cinemaId, day) {
     return new Promise((resolve, reject) => {
-      connection.query(
-        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,m.primaryThumbnail as trailer,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director JOIN movie_category mv on m.id = mv.movie_id JOIN schedule sh on sh.movie_id = m.id JOIN room r on r.id=sh.room_id where r.cinema_id=? AND DATE(sh.premiere)=? ',
-        [cinemaId,day],
-        (err, results) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(results);
-        }
-      );
+        connection.query(
+            `SELECT 
+                m.id,
+                m.name,
+                m.description,
+                d.name AS director,
+                d.image AS imageDirector,
+                m.image,
+                m.view,
+                m.ageLimit,
+                m.timeRelease,
+                m.time,
+                m.primaryThumbnail AS trailer,
+                l.name AS language,
+                f.name AS format,
+                sh.id AS schedule_id,
+                sh.premiere AS schedule_premiere,
+                sh.room_id AS room_id,
+                sh.movie_id AS movie_id,
+                room.name AS room
+            FROM 
+                movie m 
+                JOIN language l ON m.language_id = l.id 
+                JOIN format f ON f.id = m.format_id 
+                JOIN director d ON d.id = m.director 
+                JOIN movie_category mv ON m.id = mv.movie_id 
+                JOIN schedule sh ON sh.movie_id = m.id 
+                JOIN room ON room.id = sh.room_id
+            WHERE 
+                room.cinema_id = ? AND DATE(sh.premiere) = ?
+            ORDER BY 
+                sh.premiere ASC`,
+            [cinemaId, day],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                
+                const movies = {};
+                
+                // Iterate over each row in the results
+                results.forEach(row => {
+                    // If the movie doesn't exist in the movies object, create a new movie object
+                    if (!movies[row.id]) {
+                        movies[row.id] = {
+                            id: row.id,
+                            name: row.name,
+                            description: row.description,
+                            director: row.director,
+                            imageDirector: row.imageDirector,
+                            image: row.image,
+                            view: row.view,
+                            ageLimit: row.ageLimit,
+                            timeRelease: row.timeRelease,
+                            time: row.time,
+                            trailer: row.trailer,
+                            language: row.language,
+                            format: row.format,
+                            listSchedule: [] // Initialize an empty array to store schedules
+                        };
+                    }
+                    
+                    // Push the schedule of the current row to the listSchedule array of the current movie
+                    movies[row.id].listSchedule.push({
+                        id: row.schedule_id,
+                        room_id: row.room_id,
+                        movie_id: row.movie_id,
+                        premiere: row.schedule_premiere,
+                        room_name: row.room
+                    });
+                });
+
+                // Convert the movies object to an array
+                const moviesArray = Object.values(movies);
+
+                resolve(moviesArray);
+            }
+        );
     });
-  }
+}
   static async getMoviesByCategoryId(categoryId){
     return new Promise((resolve, reject) => {
       connection.query(
