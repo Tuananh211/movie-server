@@ -5,6 +5,7 @@ const productRoute = require('./product.route');
 const newsRoute = require('./news.route');
 const empRoute = require('./emp.route');
 const scheduleRoute = require('./schedule.route');
+const commentRoute= require('./comment.route');
 const authRoute = require('./auth.route');
 const authMiddleware = require('../middlewares/auth.middleware');
 const stripeRoute = require('./stripe.route');
@@ -20,6 +21,7 @@ const initRoute = app => {
   app.use('/employees', authMiddleware.checkAdmin, empRoute);
   app.use('/schedules', authMiddleware.checkLogin, scheduleRoute);
   app.use('/auth', authRoute);
+  app.use('/comment',commentRoute);
   app.use('/stripe', stripeRoute);
   app.use((data, req, res, next) => {
     console.log('Handling error middleware', data);
