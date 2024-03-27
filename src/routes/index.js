@@ -21,7 +21,7 @@ const initRoute = app => {
   app.use('/employees', authMiddleware.checkAdmin, empRoute);
   app.use('/schedules', authMiddleware.checkLogin, scheduleRoute);
   app.use('/auth', authRoute);
-  app.use('/comment',commentRoute);
+  app.use('/comment',authMiddleware.checkLogin,commentRoute);
   app.use('/stripe', stripeRoute);
   app.use((data, req, res, next) => {
     console.log('Handling error middleware', data);
