@@ -45,7 +45,7 @@ class Movie {
                 JOIN schedule sh ON sh.movie_id = m.id 
                 JOIN room ON room.id = sh.room_id
             WHERE 
-                room.cinema_id = ? AND DATE(sh.premiere) = ?
+                room.cinema_id = ? AND DATE(sh.premiere) = ? AND sh.premiere >= CURRENT_TIMESTAMP()
             ORDER BY 
                 sh.premiere ASC`,
             [cinemaId, day],
