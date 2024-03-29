@@ -18,6 +18,21 @@ static async getComment(movie_id){
           );
         });
 }
+static async getUserComment(movie_id,user_id){
+  return new Promise((resolve, reject) => {
+      connection.query(
+          'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where movie_id = ? AND user_id =?',
+          [movie_id,user_id],
+          (err, results) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(results);
+          }
+        );
+      });
+}
 static async create(
     user_id,
     movie_id,
@@ -39,7 +54,17 @@ static async create(
           if (err) {
             return reject(err);
           }
-            resolve(results);
+          connection.query(
+            'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where c.id= ?',
+            [results.insertId],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+
+              resolve(results);
+            }
+          );
         }
       );
     });

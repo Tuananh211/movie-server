@@ -11,6 +11,16 @@ exports.getComments = async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
+  exports.getUserComments = async (req, res) => {
+    const {movieId} = req.params;
+    const user_id= req.userId
+    try {
+      const comments = await Comments.getUserComment(movieId,user_id);
+      res.json(comments);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
 
 exports.createComment = async (req, res) => {
     const {
@@ -23,12 +33,7 @@ exports.createComment = async (req, res) => {
       const results = await Comments.create(
        user_id,movie_id,content,rate
       );
-      res.json({
-        success: true,
-        data: {
-          message: 'Thêm mới đánh giá thành công',
-        },
-      });
+      res.json(results);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
