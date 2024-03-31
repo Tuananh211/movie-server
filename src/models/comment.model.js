@@ -55,8 +55,8 @@ static async create(
             return reject(err);
           }
           connection.query(
-            'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where c.id= ?',
-            [results.insertId],
+            'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where movie_id = ?',
+            [movie_id],
             (err, results) => {
               if (err) {
                 return reject(err);
