@@ -44,19 +44,15 @@ exports.createComment = async (req, res) => {
       const {
         id,
         content,
-        rate
+        rate,
+        movie_id,
       } = req.body;
   
       const results = await Comments.update(
-        id,content,rate
+        id,content,rate,movie_id
       );
   
-      res.json({
-        success: true,
-        data: {
-          message: 'Cập nhật đánh giá thành công',
-        },
-      });
+        res.json(results);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -64,15 +60,9 @@ exports.createComment = async (req, res) => {
   
   exports.deleteComment = async (req, res) => {
     try {
-      const { id } = req.body;
-      const results = await Comments.delete(id);
-  
-      res.json({
-        success: true,
-        data: {
-          message: 'Xóa đánh giá thành công',
-        },
-      });
+      const { id,movie_id } = req.body;
+      const results = await Comments.delete(id,movie_id);
+      res.json(results);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

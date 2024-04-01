@@ -74,6 +74,7 @@ static async create(
     id,
     content,
     rate,
+    movie_id
   ) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -87,12 +88,21 @@ static async create(
           if (err) {
             return reject(err);
           }
-            resolve(results);
+          connection.query(
+            'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where movie_id = ?',
+            [movie_id],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(results);
+            }
+          );
         }
       );
     });
   }
-  static async delete(id) {
+  static async delete(id,movie_id) {
     return new Promise((resolve, reject) => {
       connection.query(
         'DELETE FROM comments WHERE movie_id=?',
@@ -101,7 +111,16 @@ static async create(
           if (err) {
             return reject(err);
           }
-            resolve(results);
+          connection.query(
+            'SELECT c.id,c.user_id as userId,c.movie_id as movieId,c.content,c.rate,c.create_at as createAt,u.fullName,u.avatar from comments c JOIN user u ON c.user_id=u.id where movie_id = ?',
+            [movie_id],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(results);
+            }
+          );
         }
       );
     });
