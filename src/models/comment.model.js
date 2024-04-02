@@ -105,7 +105,7 @@ static async create(
   static async delete(id,movie_id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'DELETE FROM comments WHERE movie_id=?',
+        'DELETE FROM comments WHERE id=?',
         [id],
         (err, results) => {
           if (err) {

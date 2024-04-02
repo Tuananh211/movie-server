@@ -47,11 +47,9 @@ exports.createComment = async (req, res) => {
         rate,
         movie_id,
       } = req.body;
-  
       const results = await Comments.update(
         id,content,rate,movie_id
       );
-  
         res.json(results);
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -60,8 +58,9 @@ exports.createComment = async (req, res) => {
   
   exports.deleteComment = async (req, res) => {
     try {
-      const { id,movie_id } = req.body;
-      const results = await Comments.delete(id,movie_id);
+      const { commentId,movieId } = req.query;
+      console.log(commentId)
+      const results = await Comments.delete(commentId,movieId);
       res.json(results);
     } catch (error) {
       res.status(500).json({ message: error.message });

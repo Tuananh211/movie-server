@@ -9,6 +9,6 @@ router.get('/list/:movieId',authMiddleware.checkLogin,commentController.getComme
 router.get('/userComment/:movieId',authMiddleware.checkLogin,commentController.getComments)
 router.post('/',authMiddleware.checkLogin,commentController.createComment)
 router.put('/',authMiddleware.checkLogin,commentController.updateComment)
-router.delete('/',authMiddleware.checkLogin,commentController.deleteComment)
+router.delete('/deleteComment',authMiddleware.checkLogin,commentController.deleteComment)
 
 module.exports=router
