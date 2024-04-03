@@ -3,7 +3,14 @@ class Movie {
   static async getMovies() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,m.primaryThumbnail as trailer,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director',
+        `SELECT m.id, m.name, m.description, d.name AS director, d.image AS imageDirector, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail AS trailer, l.name AS language, f.name AS format, IFNULL(AVG(rate), '0') AS rate 
+        FROM movie m 
+        JOIN language l ON m.language_id = l.id 
+        JOIN format f ON f.id = m.format_id 
+        JOIN director d ON d.id = m.director 
+        LEFT JOIN comments c ON m.id = c.movie_id
+        GROUP BY m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail, l.name, f.name
+        ORDER BY rate DESC`,
         (err, results) => {
           if (err) {
             reject(err);
@@ -35,7 +42,8 @@ class Movie {
                 sh.premiere AS schedule_premiere,
                 sh.room_id AS room_id,
                 sh.movie_id AS movie_id,
-                room.name AS room
+                room.name AS room,
+                IFNULL(AVG(c.rate), '0') AS rate 
             FROM 
                 movie m 
                 JOIN language l ON m.language_id = l.id 
@@ -44,10 +52,13 @@ class Movie {
                 JOIN movie_category mv ON m.id = mv.movie_id 
                 JOIN schedule sh ON sh.movie_id = m.id 
                 JOIN room ON room.id = sh.room_id
+                LEFT JOIN comments c ON m.id = c.movie_id
             WHERE 
                 room.cinema_id = ? AND DATE(sh.premiere) = ? AND sh.premiere >= CURRENT_TIMESTAMP()
+            GROUP BY
+                m.id, sh.id 
             ORDER BY 
-                sh.premiere ASC`,
+                sh.premiere ASC, rate DESC`,
             [cinemaId, day],
             (err, results) => {
                 if (err) {
@@ -75,6 +86,7 @@ class Movie {
                             trailer: row.trailer,
                             language: row.language,
                             format: row.format,
+                            rate: row.rate, // Lưu giá trị rate
                             listSchedule: [] // Initialize an empty array to store schedules
                         };
                     }
@@ -97,36 +109,92 @@ class Movie {
         );
     });
 }
-  static async getMoviesByCategoryId(categoryId){
-    return new Promise((resolve, reject) => {
+
+static async getMoviesByCategoryId(categoryId) {
+  return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,m.primaryThumbnail as trailer,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director JOIN movie_category mv on m.id = mv.movie_id where mv.category_id=? ',
-        [categoryId],
-        (err, results) => {
-          if (err) {
-            reject(err);
-            return;
+          `SELECT 
+              m.id,
+              m.name,
+              m.description,
+              d.name AS director,
+              d.image AS imageDirector,
+              m.image,
+              m.view,
+              m.ageLimit,
+              m.timeRelease,
+              m.time,
+              m.primaryThumbnail AS trailer,
+              l.name AS language,
+              f.name AS format,
+              IFNULL(AVG(c.rate), '0') AS rate
+          FROM 
+              movie m 
+              JOIN language l ON m.language_id = l.id 
+              JOIN format f ON f.id = m.format_id 
+              JOIN director d ON d.id = m.director 
+              JOIN movie_category mv ON m.id = mv.movie_id 
+              LEFT JOIN comments c ON m.id = c.movie_id
+          WHERE 
+              mv.category_id = ?
+          GROUP BY
+              m.id
+          ORDER BY rate DESC
+          `,
+          [categoryId],
+          (err, results) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(results);
           }
-          resolve(results);
-        }
       );
-    });
-  }
-  static async getMoviesByName(nameMovie){
-    return new Promise((resolve, reject) => {
+  });
+}
+
+static async getMoviesByName(nameMovie) {
+  return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT m.id,m.name,m.description,d.name as director,d.image as imageDirector,m.image,m.view,m.ageLimit,m.timeRelease,m.time,m.primaryThumbnail as trailer,l.name as language, f.name as format FROM movie m JOIN language l on m.language_id=l.id JOIN format f on f.id=m.format_id JOIN director d on d.id=m.director where LOWER(m.name) like LOWER(?)',
-        ['%' + nameMovie + '%'],
-        (err, results) => {
-          if (err) {
-            reject(err);
-            return;
+          `SELECT 
+              m.id,
+              m.name,
+              m.description,
+              d.name AS director,
+              d.image AS imageDirector,
+              m.image,
+              m.view,
+              m.ageLimit,
+              m.timeRelease,
+              m.time,
+              m.primaryThumbnail AS trailer,
+              l.name AS language,
+              f.name AS format,
+              IFNULL(AVG(c.rate), 0) AS rate
+          FROM 
+              movie m 
+              JOIN language l ON m.language_id = l.id 
+              JOIN format f ON f.id = m.format_id 
+              JOIN director d ON d.id = m.director 
+              LEFT JOIN comments c ON m.id = c.movie_id
+          WHERE 
+              LOWER(m.name) LIKE LOWER(?)
+          GROUP BY
+              m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail, l.name, f.name
+          ORDER BY rate DESC
+              `, // Sử dụng GROUP BY để nhóm kết quả theo id của bộ phim và tính trung bình rate
+          ['%' + nameMovie + '%'],
+          (err, results) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(results);
           }
-          resolve(results);
-        }
       );
-    });
-  }
+  });
+}
+
   static async getActorByMovieID(movieId) {
     return new Promise((resolve, reject) => {
       connection.query(
