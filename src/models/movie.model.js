@@ -3,13 +3,13 @@ class Movie {
   static async getMovies() {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT m.id, m.name, m.description, d.name AS director, d.image AS imageDirector, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail AS trailer, l.name AS language, f.name AS format, IFNULL(AVG(rate), '0') AS rate 
+        `SELECT m.id, m.name, m.description, d.name AS director, d.image AS imageDirector, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name AS language, f.name AS format, IFNULL(AVG(rate), '0') AS rate 
         FROM movie m 
         JOIN language l ON m.language_id = l.id 
         JOIN format f ON f.id = m.format_id 
         JOIN director d ON d.id = m.director 
         LEFT JOIN comments c ON m.id = c.movie_id
-        GROUP BY m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail, l.name, f.name
+        GROUP BY m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
         ORDER BY rate DESC`,
         (err, results) => {
           if (err) {
@@ -35,7 +35,7 @@ class Movie {
                 m.ageLimit,
                 m.timeRelease,
                 m.time,
-                m.primaryThumbnail AS trailer,
+                m.trailer,
                 l.name AS language,
                 f.name AS format,
                 sh.id AS schedule_id,
@@ -124,7 +124,7 @@ static async getMoviesByCategoryId(categoryId) {
               m.ageLimit,
               m.timeRelease,
               m.time,
-              m.primaryThumbnail AS trailer,
+              m.trailer,
               l.name AS language,
               f.name AS format,
               IFNULL(AVG(c.rate), '0') AS rate
@@ -167,7 +167,7 @@ static async getMoviesByName(nameMovie) {
               m.ageLimit,
               m.timeRelease,
               m.time,
-              m.primaryThumbnail AS trailer,
+              m.trailer,
               l.name AS language,
               f.name AS format,
               IFNULL(AVG(c.rate), 0) AS rate
@@ -180,7 +180,7 @@ static async getMoviesByName(nameMovie) {
           WHERE 
               LOWER(m.name) LIKE LOWER(?)
           GROUP BY
-              m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.primaryThumbnail, l.name, f.name
+              m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
           ORDER BY rate DESC
               `, // Sử dụng GROUP BY để nhóm kết quả theo id của bộ phim và tính trung bình rate
           ['%' + nameMovie + '%'],
@@ -287,11 +287,11 @@ static async getMoviesByName(nameMovie) {
     time,
     formatId,
     categoryId,
-    primaryThumbnail
+    trailer
   ) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO movie(name,director,description,image,country_id,language_id,view,ageLimit,timeRelease,time,format_id,primaryThumbnail) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO movie(name,director,description,image,country_id,language_id,view,ageLimit,timeRelease,time,format_id,trailer) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         [
           name,
           director,
@@ -304,7 +304,7 @@ static async getMoviesByName(nameMovie) {
           timeRelease,
           time,
           formatId,
-          primaryThumbnail,
+          trailer,
         ],
         (err, results) => {
           if (err) {

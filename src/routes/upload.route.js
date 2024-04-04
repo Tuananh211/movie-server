@@ -11,4 +11,8 @@ uploadRouter.post(
   "/",upload.single('file'),uploadController.upload
 );
 
+uploadRouter.post(
+  "/uploadVideo",upload.single('video'),uploadController.uploadVideo
+)
+
 module.exports = uploadRouter;
