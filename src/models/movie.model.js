@@ -10,7 +10,7 @@ class Movie {
         JOIN director d ON d.id = m.director 
         LEFT JOIN comments c ON m.id = c.movie_id
         GROUP BY m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
-        ORDER BY rate DESC`,
+        ORDER BY m.timeRelease DESC,rate DESC`,
         (err, results) => {
           if (err) {
             reject(err);
@@ -139,7 +139,7 @@ static async getMoviesByCategoryId(categoryId) {
               mv.category_id = ?
           GROUP BY
               m.id
-          ORDER BY rate DESC
+          ORDER BY m.timeRelease DESC,rate DESC
           `,
           [categoryId],
           (err, results) => {
@@ -181,7 +181,7 @@ static async getMoviesByName(nameMovie) {
               LOWER(m.name) LIKE LOWER(?)
           GROUP BY
               m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
-          ORDER BY rate DESC
+          ORDER BY m.timeRelease DESC,rate DESC
               `, // Sử dụng GROUP BY để nhóm kết quả theo id của bộ phim và tính trung bình rate
           ['%' + nameMovie + '%'],
           (err, results) => {
