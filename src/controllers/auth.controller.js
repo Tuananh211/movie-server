@@ -20,6 +20,9 @@ exports.login = async (req, res, next) => {
     if (user && !user?.isVerify) {
       return next({ message: 'Tài khoản chưa được xác minh' });
     }
+    if (user && user?.isLock) {
+      return next({ message: 'Tài khoản của bạn đã bị khóa' });
+    }
     if (user?.id) {
       const isPassword = bcrypt.compareSync(password, user.password);
       if (!isPassword) {
