@@ -96,7 +96,7 @@ class Schedule {
   static async getReport(movieId, fromDate, toDate) {
     return new Promise((resolve, reject) => {
       const query = movieId
-        ? 'SELECT SUM(ticket.value) as total_value, DATE(ticket.created_date) AS date_only FROM ticket JOIN schedule ON schedule.id = ticket.schedule_id WHERE ticket.movie_id = ? AND ticket.is_cancel = 0  AND ticket.is_success = 1  AND ticket.created_date BETWEEN ? AND ? GROUP BY date_only ORDER BY date_only'
+        ? 'SELECT SUM(ticket.value) as total_value, DATE(ticket.created_date) AS date_only FROM ticket JOIN schedule ON schedule.id = ticket.schedule_id WHERE schedule.movie_id = ? AND ticket.is_cancel = 0  AND ticket.is_success = 1  AND ticket.created_date BETWEEN ? AND ? GROUP BY date_only ORDER BY date_only'
         : 'SELECT SUM(value) as total_value, DATE(created_date) AS date_only FROM ticket WHERE is_cancel = 0 AND is_success = 1 AND created_date BETWEEN ? AND ? GROUP BY date_only ORDER BY date_only';
       const params = movieId ? [movieId, fromDate, toDate] : [fromDate, toDate];
       connection.query(query, params, (err, results) => {

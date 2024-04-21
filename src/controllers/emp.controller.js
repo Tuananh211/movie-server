@@ -58,6 +58,39 @@ exports.updateEmp = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.lockEmp = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const results = await Emp.lockEmp(userId);
+    res.json({
+      success: true,
+      data: {
+        message: 'Tài khoản này đã bị khóa',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.unLockEmp = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const results = await Emp.unLockEmp(userId);
+    res.json({
+      success: true,
+      data: {
+        message: 'Tài khoản này đã được mở khóa',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.deleteEmp = async (req, res) => {
   const { id } = req.body;
   try {

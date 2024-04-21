@@ -3,7 +3,7 @@ class Emp {
   static async getEmps() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE role="EMP"',
+        'SELECT * FROM user WHERE role="USER"',
         (err, results) => {
           if (err) {
             reject(err);
@@ -18,7 +18,7 @@ class Emp {
   static async create(fullName, address, email, password) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO user(fullName,address,email,password,role,isVerify) VALUES(?,?,?,?,"EMP","1")',
+        'INSERT INTO user(fullName,address,email,password,role,isVerify) VALUES(?,?,?,?,"USER","1")',
         [fullName, address, email, password],
         (err, results) => {
           if (err) {
@@ -68,6 +68,37 @@ class Emp {
       connection.query(
         'UPDATE user SET fullName=?,address=?,email=?,password=? WHERE id=?',
         [fullName, address, email, password, id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  static async lockEmp(userId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE user SET isLock=1 WHERE id=?',
+        [userId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+  static async unLockEmp(userId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE user SET isLock=0 WHERE id=?',
+        [userId],
         (err, results) => {
           if (err) {
             reject(err);

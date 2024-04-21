@@ -8,6 +8,6 @@ router.get('/',empController.getEmps)
 router.delete('/',empController.deleteEmp)
 router.post('/',empController.createEmp)
 router.put('/',empController.updateEmp)
-
-
+router.put('/lockUser/:userId',empController.lockEmp)
+router.put('/unLockUser/:userId',empController.unLockEmp)
 module.exports=router
