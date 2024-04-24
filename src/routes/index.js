@@ -1,5 +1,6 @@
 const movieRoute = require('./movie.route');
 const actorRoute = require('./actor.route')
+const directorRoute= require('./director.route')
 const cinemaRoute = require('./cinema.route');
 const productRoute = require('./product.route');
 const newsRoute = require('./news.route');
@@ -14,7 +15,8 @@ const uploadRoute= require('./upload.route')
 const initRoute = app => {
   app.use('/movies', movieRoute);
   app.use('/upload',authMiddleware.checkLogin,uploadRoute);
-  app.use('/actor', authMiddleware.checkLogin,actorRoute)
+  app.use('/actor', authMiddleware.checkLogin,actorRoute);
+  app.use('/director', authMiddleware.checkLogin,directorRoute);
   app.use('/cinemas', cinemaRoute);
   app.use('/products', authMiddleware.checkLogin, productRoute);
   app.use('/news', authMiddleware.checkLogin, newsRoute);

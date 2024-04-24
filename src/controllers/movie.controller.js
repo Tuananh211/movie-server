@@ -62,6 +62,17 @@ exports.getActors = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+exports.getListDirectors = async (req, res) => {
+  try {
+    const actors = await Movie.getListDirectors();
+    res.json(actors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getCategories = async (req, res) => {
   try {
     const categories = await Movie.getCategories();
