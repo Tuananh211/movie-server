@@ -9,7 +9,15 @@ exports.getListActors = async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
-
+  exports.getActorById = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const results = await Actor.getActorById(id);
+      res.json(results);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
   exports.getActors = async (req, res) => {
     const {movieId} = req.params;
     try {

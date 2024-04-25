@@ -14,6 +14,21 @@ class Actor {
           );
         });
       }
+      static async getActorById(id) {
+        return new Promise((resolve, reject) => {
+          connection.query(
+            'SELECT a.* FROM actor a where a.id=?',
+            [id],
+            (err, results) => {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(results);
+            }
+          );
+        });
+      }
       static async getActorByMovieID(movieId) {
         return new Promise((resolve, reject) => {
           connection.query(

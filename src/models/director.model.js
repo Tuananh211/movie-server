@@ -14,6 +14,22 @@ class Director {
           );
         });
       }
+    
+      static async getDirectorById(id) {
+        return new Promise((resolve, reject) => {
+          connection.query(
+            'SELECT d.* FROM director d where d.id = ?',
+            [id],
+            (err, results) => {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(results);
+            }
+          );
+        });
+      }
 
       static async createDirector(
         name,

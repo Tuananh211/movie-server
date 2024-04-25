@@ -9,6 +9,15 @@ const connection = require('../databases');
       res.status(500).json({ message: err.message });
     }
   };
+  exports.getDirectorById = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const results = await Director.getDirectorById(id);
+      res.json(results);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
 
   exports.createDirector = async (req, res) => {
     const {
