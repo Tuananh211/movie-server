@@ -44,23 +44,17 @@ class Actor {
           );
         });
       }
-      static async createActor(
-        name,
-        image
-      ) {
+      static async createActor(name, image) {
         return new Promise((resolve, reject) => {
           connection.query(
-            'INSERT INTO actor(name,image) VALUES(?,?)',
-            [
-              name,
-              image
-            ],
+            'INSERT INTO actor (name, image) VALUES (?, ?)',
+            [name, image],
             (err, results) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve(results);
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(results);
             }
           );
         });

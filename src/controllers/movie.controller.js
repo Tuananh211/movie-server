@@ -120,7 +120,7 @@ exports.createMovie = async (req, res) => {
     time,
     formatId,
     categoryId,
-    primaryThumbnail,
+    trailer,
   } = req.body;
   try {
     const results = await Movie.create(
@@ -136,7 +136,7 @@ exports.createMovie = async (req, res) => {
       time,
       formatId,
       categoryId,
-      primaryThumbnail
+      trailer
     );
     res.json({
       success: true,
@@ -165,6 +165,7 @@ exports.updateMovie = async (req, res) => {
       time,
       formatId,
       categoryId,
+      trailer
     } = req.body;
 
     const results = await Movie.update(
@@ -180,7 +181,8 @@ exports.updateMovie = async (req, res) => {
       timeRelease,
       time,
       formatId,
-      categoryId
+      categoryId,
+      trailer
     );
 
     res.json({

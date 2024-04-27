@@ -33,7 +33,7 @@ exports.getListActors = async (req, res) => {
       image,
     } = req.body;
     try {
-      const results = await Movie.create(
+      const results = await Actor.createActor(
         name,
         image,
       );
@@ -56,7 +56,7 @@ exports.getListActors = async (req, res) => {
         image
       } = req.body;
   
-      const results = await Movie.update(
+      const results = await Actor.updateActor(
         id,
         name,
         image,
@@ -76,7 +76,7 @@ exports.getListActors = async (req, res) => {
   exports.deleteActor = async (req, res) => {
     try {
       const { id } = req.body;
-      const results = await Movie.delete(id);
+      const results = await Actor.delete(id);
   
       res.json({
         success: true,

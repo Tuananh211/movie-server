@@ -46,11 +46,11 @@ class Cinema {
     });
   }
 
-  static createCinema(name, cityId) {
+  static createCinema(name, address) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO cinema(name,city_id) VALUES(?,?)',
-        [name, cityId],
+        'INSERT INTO cinema(name,address) VALUES(?,?)',
+        [name, address],
         (err, results) => {
           if (err) {
             return reject(err);
@@ -61,11 +61,11 @@ class Cinema {
     });
   }
 
-  static update(id, name, cityId) {
+  static update(id, name, address) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE cinema SET name=?,city_id=? WHERE id=?',
-        [name, cityId, id],
+        'UPDATE cinema SET name=?,address=? WHERE id=?',
+        [name, address, id],
         (err, results) => {
           if (err) {
             reject(err);
@@ -103,7 +103,7 @@ class Cinema {
 
   static async getCities() {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM city', (err, results) => {
+      connection.query('SELECT * FROM city where name = "Hà Nội"', (err, results) => {
         if (err) {
           reject(err);
         }
@@ -142,11 +142,11 @@ class Cinema {
     });
   }
 
-  static async findCinemaByName(name, cityId) {
+  static async findCinemaByName(name, address) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT name FROM cinema WHERE name=? AND city_id=?',
-        [name, cityId],
+        'SELECT name FROM cinema WHERE name=? AND city_id=1 AND address= ?',
+        [name, address],
         (err, results) => {
           if (err) {
             return reject(err);
