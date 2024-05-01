@@ -49,6 +49,47 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.loginAdmin = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    // const results = await User.findByEmailAndPassword(email, password);
+    const results = await User.findByEmail(email);
+    const user = results[0];
+    if (!user) {
+      return next({ message: 'Đăng nhập thất bại' });
+    }
+    if (user && !user?.isVerify) {
+      return next({ message: 'Tài khoản chưa được xác minh' });
+    }
+    if (user && user?.isLock) {
+      return next({ message: 'Tài khoản của bạn đã bị khóa' });
+    }
+    if (user?.id) {
+      const isPassword = bcrypt.compareSync(password, user.password);
+      if (!isPassword) {
+        next({ message: 'Đăng nhập thất bại' });
+        return;
+      }
+      const token = jwt.sign(
+        {
+          userId: user.id,
+          userEmail: user.email,
+          userRole: user.role,
+        },
+        process.env.TOKEN_SECRET,
+        { expiresIn: '24h' }
+      );
+      res.json({
+        accessToken: token,
+      });
+      return;
+    }
+    next({ message: 'Đăng nhập thất bại' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.register = async (req, res, next) => {
   try {
     const { fullName, email, password, address, dob, gender } = req.body;

@@ -277,6 +277,7 @@ static async getMoviesByName(nameMovie) {
   static async create(
     name,
     director,
+    actors,
     description,
     image,
     countryId,
@@ -310,24 +311,52 @@ static async getMoviesByName(nameMovie) {
           if (err) {
             return reject(err);
           }
+          const movieId = results.insertId;
+
+          // Thêm liên kết giữa bảng movie và bảng category
           connection.query(
             'INSERT INTO movie_category(movie_id,category_id) VALUES(?,?)',
-            [results.insertId, categoryId],
-            (err, results) => {
+            [movieId, categoryId],
+            (err, categoryResults) => {
               if (err) {
                 return reject(err);
               }
-              resolve(results);
+              // Thêm liên kết giữa bảng movie và bảng actor cho mỗi diễn viên
+              const promises = actors.map(act => {
+                return new Promise((resolve, reject) => {
+                  connection.query(
+                    'INSERT INTO movie_actor(movie_id,actor_id) VALUES(?,?)',
+                    [movieId, act?.id],
+                    (err, actorResults) => {
+                      if (err) {
+                        return reject(err);
+                      }
+                      resolve(actorResults);
+                    }
+                  );
+                });
+              });
+
+              // Đợi tất cả các truy vấn được thực hiện trước khi resolve Promise chính
+              Promise.all(promises)
+                .then(() => {
+                  resolve(categoryResults);
+                })
+                .catch(err => {
+                  reject(err);
+                });
             }
           );
         }
       );
     });
   }
+
   static async update(
     id,
     name,
     director,
+    actors,
     description,
     image,
     countryId,
@@ -337,11 +366,12 @@ static async getMoviesByName(nameMovie) {
     timeRelease,
     time,
     formatId,
-    categoryId
+    categoryId,
+    trailer
   ) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE movie SET name=?,director=?,description=?,image=?,country_id=?,language_id=?,view=?,ageLimit=?,timeRelease=?,time=?,format_id=? WHERE id=?',
+        'UPDATE movie SET name=?,director=?,description=?,image=?,country_id=?,language_id=?,view=?,ageLimit=?,timeRelease=?,time=?,format_id=?,trailer=? WHERE id=?',
         [
           name,
           director,
@@ -354,6 +384,7 @@ static async getMoviesByName(nameMovie) {
           timeRelease,
           time,
           formatId,
+          trailer,
           id,
         ],
         (err, results) => {
@@ -369,13 +400,39 @@ static async getMoviesByName(nameMovie) {
                 return reject(err);
               }
 
-              resolve(results);
+              // Xóa các bản ghi trong bảng movie_actor có movie_id = id
+              connection.query(
+                'DELETE FROM movie_actor WHERE movie_id=?',
+                [id],
+                (err, results) => {
+                  if (err) {
+                    return reject(err);
+                  }
+
+                  // Duyệt từng phần tử trong mảng actors và thêm lại vào bảng movie_actor
+                  actors.forEach(actor => {
+                    connection.query(
+                      'INSERT INTO movie_actor(movie_id, actor_id) VALUES (?, ?)',
+                      [id, actor.id],
+                      (err, results) => {
+                        if (err) {
+                          return reject(err);
+                        }
+                      }
+                    );
+                  });
+
+                  resolve(results);
+                }
+              );
             }
           );
         }
       );
     });
   }
+
+
   static async delete(id) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -385,22 +442,35 @@ static async getMoviesByName(nameMovie) {
           if (err) {
             return reject(err);
           }
-
+  
+          // Sau khi xóa các bản ghi trong bảng movie_category, tiếp tục xóa các bản ghi trong bảng movie_actor có movie_id = id
           connection.query(
-            'DELETE FROM movie WHERE id=?',
+            'DELETE FROM movie_actor WHERE movie_id=?',
             [id],
             (err, results) => {
               if (err) {
                 return reject(err);
               }
-
-              resolve(results);
+  
+              // Tiếp tục xóa bản ghi trong bảng movie
+              connection.query(
+                'DELETE FROM movie WHERE id=?',
+                [id],
+                (err, results) => {
+                  if (err) {
+                    return reject(err);
+                  }
+  
+                  resolve(results);
+                }
+              );
             }
           );
         }
       );
     });
   }
+  
 }
 
 module.exports = Movie;

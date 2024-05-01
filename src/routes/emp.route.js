@@ -5,6 +5,8 @@ const empController=require('../controllers/emp.controller')
 
 router.get('/:empId',empController.getEmpById)
 router.get('/',empController.getEmps)
+router.get('/users',empController.getUsers)
+router.post('/createUser',empController.createUser)
 router.delete('/',empController.deleteEmp)
 router.post('/',empController.createEmp)
 router.put('/',empController.updateEmp)

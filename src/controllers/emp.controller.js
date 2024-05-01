@@ -8,6 +8,14 @@ exports.getEmps = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getUsers = async (req, res) => {
+  try {
+    const emps = await Emp.getUsers();
+    res.json(emps);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 exports.createEmp = async (req, res) => {
   const { fullName, email, password, address } = req.body;
   try {
@@ -22,11 +30,37 @@ exports.createEmp = async (req, res) => {
       return;
     }
 
-    const results = await Emp.create(fullName, address, email, password);
+    const results = await Emp.createEmp(fullName, address, email, password);
     res.json({
       success: true,
       data: {
         message: 'Thêm nhân viên thành công',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.createUser = async (req, res) => {
+  const { fullName, email, password, address } = req.body;
+  try {
+    const resultEmp = await Emp.findEmpByEmail(email);
+    if (resultEmp.length > 0) {
+      res.json({
+        success: false,
+        data: {
+          message: 'Email người dùng đã tồn tại',
+        },
+      });
+      return;
+    }
+
+    const results = await Emp.createUser(fullName, address, email, password);
+    res.json({
+      success: true,
+      data: {
+        message: 'Thêm người dùng thành công',
       },
     });
   } catch (err) {
@@ -52,6 +86,22 @@ exports.updateEmp = async (req, res) => {
       success: true,
       data: {
         message: 'Cập nhật nhân viên thành công',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  const { id, fullName, email, password, address } = req.body;
+
+  try {
+    const results = await Emp.update(fullName, address, email, password, id);
+    res.json({
+      success: true,
+      data: {
+        message: 'Cập nhật người dùng thành công',
       },
     });
   } catch (err) {

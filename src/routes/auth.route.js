@@ -4,6 +4,7 @@ const router = express.Router();
 const authController = require('../controllers/auth.controller');
 const { checkLogin } = require('../middlewares/auth.middleware');
 router.post('/login', authController.login);
+router.post('/login/admin',authController.loginAdmin);
 router.post('/register', authController.register);
 router.post('/changePassword', checkLogin, authController.changePassword);
 router.post('/forgotPassword', authController.forgotPassword);

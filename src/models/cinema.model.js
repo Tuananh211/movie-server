@@ -46,6 +46,22 @@ class Cinema {
     });
   }
 
+  static async getCinemaById2(cinemaId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT cinema.*,city.id as city_id,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id where cinema.id=?',
+        [cinemaId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
   static createCinema(name, address) {
     return new Promise((resolve, reject) => {
       connection.query(

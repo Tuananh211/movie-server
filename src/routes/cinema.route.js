@@ -8,6 +8,7 @@ router.get('/rooms/:roomId',authMiddleware.checkLogin,cinemaController.getCinema
 router.get('/cities',authMiddleware.checkLogin,cinemaController.getCities)
 router.post('/rooms',authMiddleware.checkAdmin,cinemaController.addRoom)
 router.get('/:cinemaId',authMiddleware.checkLogin,cinemaController.getCinemaById)
+router.get('/getCinemaById/:cinemaId',authMiddleware.checkLogin,cinemaController.getCinemaById2)
 router.get('/',cinemaController.getCinemas)
 router.get('/hasSchedule/:movieId',authMiddleware.checkLogin,cinemaController.getCinemasByMovieId)
 router.post('/',authMiddleware.checkAdmin,cinemaController.createCinema)

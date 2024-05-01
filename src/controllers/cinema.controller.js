@@ -27,6 +27,15 @@ exports.getCinemaById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getCinemaById2 = async (req, res) => {
+  const { cinemaId } = req.params;
+  try {
+    const results = await Cinema.getCinemaById2(cinemaId);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 exports.createCinema = async (req, res) => {
   const { name, address } = req.body;
   try {

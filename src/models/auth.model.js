@@ -31,7 +31,21 @@ class User {
       );
     });
   }
-
+  static async findByEmailAdmin(email) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT * FROM user WHERE email=? AND role= "ADMIN"',
+        [email],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
   static async findById(id) {
     return new Promise((resolve, reject) => {
       connection.query(

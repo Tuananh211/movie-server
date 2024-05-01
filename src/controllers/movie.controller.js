@@ -110,6 +110,7 @@ exports.createMovie = async (req, res) => {
   const {
     name,
     director,
+    actors,
     description,
     image,
     countryId,
@@ -126,6 +127,7 @@ exports.createMovie = async (req, res) => {
     const results = await Movie.create(
       name,
       director,
+      actors,
       description,
       image,
       countryId,
@@ -155,6 +157,7 @@ exports.updateMovie = async (req, res) => {
       id,
       name,
       director,
+      actors,
       description,
       image,
       countryId,
@@ -172,6 +175,7 @@ exports.updateMovie = async (req, res) => {
       id,
       name,
       director,
+      actors,
       description,
       image,
       countryId,
