@@ -8,8 +8,9 @@ exports.getEmps = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-exports.getUsers = async (req, res) => {
+exports.getListUser = async (req, res) => {
   try {
+    console.log(1)
     const emps = await Emp.getUsers();
     res.json(emps);
   } catch (err) {
@@ -17,7 +18,7 @@ exports.getUsers = async (req, res) => {
   }
 };
 exports.createEmp = async (req, res) => {
-  const { fullName, email, password, address } = req.body;
+  const { fullName, email, password, address,cinema_id } = req.body;
   try {
     const resultEmp = await Emp.findEmpByEmail(email);
     if (resultEmp.length > 0) {
@@ -30,7 +31,7 @@ exports.createEmp = async (req, res) => {
       return;
     }
 
-    const results = await Emp.createEmp(fullName, address, email, password);
+    const results = await Emp.createEmp(fullName, address, email, password,cinema_id);
     res.json({
       success: true,
       data: {
@@ -111,7 +112,7 @@ exports.updateUser = async (req, res) => {
 
 exports.lockEmp = async (req, res) => {
   const { userId } = req.params;
-
+  console.log(userId)
   try {
     const results = await Emp.lockEmp(userId);
     res.json({
