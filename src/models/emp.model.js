@@ -3,7 +3,7 @@ class Emp {
   static async getEmps() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT *,c.name as cinema_name FROM user JOIN cinema c ON c.id = user.cinema_id WHERE role="EMP"',
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP"',
         (err, results) => {
           if (err) {
             reject(err);
