@@ -12,6 +12,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 const stripeRoute = require('./stripe.route');
 const uploadRoute= require('./upload.route')
 const userRouter = require('../routes/user.route')
+const reportRouter= require('../routes/report.route')
 
 const initRoute = app => {
   app.use('/movies', movieRoute);
@@ -24,6 +25,7 @@ const initRoute = app => {
   app.use('/employees', authMiddleware.checkAdmin, empRoute);
   app.use('/users', authMiddleware.checkAdmin, userRouter);
   app.use('/schedules', authMiddleware.checkLogin, scheduleRoute);
+  app.use('/report',authMiddleware.checkLogin,reportRouter);
   app.use('/auth', authRoute);
   app.use('/comment',authMiddleware.checkLogin,commentRoute);
   app.use('/stripe', stripeRoute);

@@ -47,7 +47,7 @@ class Emp {
   static async createUser(fullName, address, email, password) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO user(fullName,address,email,password,role,isVerify) VALUES(?,?,?,?,"EMP","1")',
+        'INSERT INTO user(fullName,address,email,password,role,isVerify) VALUES(?,?,?,?,"USER","1")',
         [fullName, address, email, password],
         (err, results) => {
           if (err) {
