@@ -30,8 +30,8 @@ exports.createEmp = async (req, res) => {
       });
       return;
     }
-
-    const results = await Emp.createEmp(fullName, address, email, password,cinema_id);
+    const hashPassword = bcrypt.hashSync(password, 10);
+    const results = await Emp.createEmp(fullName, address, email, hashPassword,cinema_id);
     res.json({
       success: true,
       data: {
@@ -56,8 +56,8 @@ exports.createUser = async (req, res) => {
       });
       return;
     }
-
-    const results = await Emp.createUser(fullName, address, email, password);
+    const hashPassword = bcrypt.hashSync(password, 10);
+    const results = await Emp.createUser(fullName, address, email, hashPassword);
     res.json({
       success: true,
       data: {

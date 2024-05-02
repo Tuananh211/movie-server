@@ -19,7 +19,7 @@ class Report {
     static async getTotalTicket() {
         return new Promise((resolve, reject) => {
           connection.query(
-            'SELECT  COUNT(*) as totalTicket, SUM(value) as totalValue From ticket',
+            'SELECT  COUNT(*) as totalTicket, SUM(value) as totalValue From ticket where is_cancel = 0 AND is_success = 1',
             (err, results) => {
               if (err) {
                 reject(err);
