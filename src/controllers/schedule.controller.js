@@ -69,8 +69,10 @@ exports.getReport = async (req, res) => {
   const fromDate = req.query.fromDate || '2023-01-01';
   const toDate = req.query.toDate || '2025-01-01';
   const movieId = req.query.movieId;
+  const cinemaId = req.query.cinemaId;
+
   try {
-    const results = await Schedule.getReport(movieId, fromDate, toDate);
+    const results = await Schedule.getReport(movieId,fromDate, toDate,cinemaId);
     return res.json(results);
   } catch (err) {
     return res.status(500).json({ message: err.message });

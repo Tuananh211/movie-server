@@ -53,22 +53,21 @@ exports.loginAdmin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     // const results = await User.findByEmailAndPassword(email, password);
-    const results = await User.findByEmail(email);
+    const results = await User.findByEmailAdmin(email);
     const user = results[0];
     if (!user) {
-      return next({ message: 'Đăng nhập thất bại' });
+      return res.status(401).json({ message: 'Đăng nhập thất bại' });
     }
     if (user && !user?.isVerify) {
-      return next({ message: 'Tài khoản chưa được xác minh' });
+      return res.status(401).json({ message: 'Tài khoản chưa được xác minh' });
     }
     if (user && user?.isLock) {
-      return next({ message: 'Tài khoản của bạn đã bị khóa' });
+      return res.status(401).json({ message: 'Tài khoản của bạn đã bị khóa' });
     }
     if (user?.id) {
       const isPassword = bcrypt.compareSync(password, user.password);
       if (!isPassword) {
-        next({ message: 'Đăng nhập thất bại' });
-        return;
+        return res.status(401).json({ message: 'Đăng nhập thất bại' });
       }
       const token = jwt.sign(
         {
@@ -82,13 +81,15 @@ exports.loginAdmin = async (req, res, next) => {
       res.json({
         accessToken: token,
       });
-      return;
+    } else {
+      return res.status(401).json({ message: 'Đăng nhập thất bại' });
     }
-    next({ message: 'Đăng nhập thất bại' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Xử lý lỗi nếu có
+    next(err);
   }
 };
+
 
 exports.register = async (req, res, next) => {
   try {

@@ -1,5 +1,6 @@
 const connection = require('../databases');
 const Emp = require('../models/emp.model');
+const bcrypt = require('bcrypt');
 exports.getEmps = async (req, res) => {
   try {
     const emps = await Emp.getEmps();
@@ -82,6 +83,14 @@ exports.updateEmp = async (req, res) => {
   const { id, fullName, email, password, address } = req.body;
 
   try {
+    const emp= await Emp.getEmpById(id)
+    const existEmp = users[0];
+    const isPassword = bcrypt.compareSync(password,existEmp.password);
+  
+    if(!isPassword){
+        password= bcrypt.hashSync(password, 10)
+    }
+    
     const results = await Emp.update(fullName, address, email, password, id);
     res.json({
       success: true,

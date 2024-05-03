@@ -93,12 +93,36 @@ class Schedule {
     });
   }
 
-  static async getReport(movieId, fromDate, toDate) {
+  static async getReport(movieId, fromDate, toDate, cinemaId) {
     return new Promise((resolve, reject) => {
-      const query = movieId
-        ? 'SELECT SUM(ticket.value) as total_value, DATE(ticket.created_date) AS date_only FROM ticket JOIN schedule ON schedule.id = ticket.schedule_id WHERE schedule.movie_id = ? AND ticket.is_cancel = 0  AND ticket.is_success = 1  AND ticket.created_date BETWEEN ? AND ? GROUP BY date_only ORDER BY date_only'
-        : 'SELECT SUM(value) as total_value, DATE(created_date) AS date_only FROM ticket WHERE is_cancel = 0 AND is_success = 1 AND created_date BETWEEN ? AND ? GROUP BY date_only ORDER BY date_only';
-      const params = movieId ? [movieId, fromDate, toDate] : [fromDate, toDate];
+      let query;
+      let params;
+      if (movieId && cinemaId) {
+        query = `SELECT COALESCE(SUM(ticket.value), 0) as total_value, DATE(ticket.created_date) AS date_only
+                 FROM ticket
+                   LEFT JOIN schedule ON schedule.id = ticket.schedule_id
+                   LEFT JOIN room ON schedule.room_id = room.id
+                   LEFT JOIN cinema ON room.cinema_id = cinema.id
+                 WHERE schedule.movie_id = ? AND cinema.id = ? AND ticket.is_cancel = 0 AND ticket.is_success = 1 AND ticket.created_date BETWEEN ? AND ?
+                 GROUP BY date_only
+                 ORDER BY date_only`;
+        params = [movieId, cinemaId, fromDate, toDate];
+      } else if (movieId && cinemaId === null) {
+        query = `SELECT COALESCE(SUM(ticket.value), 0) as total_value, DATE(ticket.created_date) AS date_only
+                 FROM ticket
+                   JOIN schedule ON schedule.id = ticket.schedule_id
+                 WHERE schedule.movie_id = ? AND ticket.is_cancel = 0 AND ticket.is_success = 1 AND ticket.created_date BETWEEN ? AND ?
+                 GROUP BY date_only
+                 ORDER BY date_only`;
+        params = [movieId, fromDate, toDate];
+      } else {
+        query = `SELECT COALESCE(SUM(ticket.value), 0) as total_value, DATE(created_date) AS date_only
+                 FROM ticket
+                 WHERE is_cancel = 0 AND is_success = 1 AND created_date BETWEEN ? AND ?
+                 GROUP BY date_only
+                 ORDER BY date_only`;
+        params = [fromDate, toDate];
+      }
       connection.query(query, params, (err, results) => {
         if (err) {
           return reject(err);
@@ -107,6 +131,7 @@ class Schedule {
       });
     });
   }
+  
 
   static async bookingChairs(
     userId,
