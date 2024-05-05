@@ -165,3 +165,18 @@ exports.deleteEmp = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.deleteUser = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const results = await Emp.deleteUser(id);
+    res.json({
+      success: true,
+      data: {
+        message: 'Xóa tài khoản thành công',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

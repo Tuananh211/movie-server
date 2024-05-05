@@ -10,6 +10,7 @@ router.put('/updateUser',empController.updateUser)
 router.put('/lockUser/:userId',empController.lockEmp)
 router.put('/unLockUser/:userId',empController.unLockEmp)
 router.get('/:empId',empController.getEmpById)
+router.delete('/',empController.deleteUser)
 
 
 module.exports=router

@@ -150,6 +150,28 @@ class Emp {
       });
     });
   }
+
+  static async deleteUser(id) {
+    return new Promise((resolve, reject) => {
+      connection.query('DELETE FROM comment WHERE user_id=?', [id], (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        connection.query(
+                'DELETE FROM user WHERE id=?',
+                [id],
+                (err, results) => {
+                  if (err) {
+                    return reject(err);
+                  }
+  
+                  resolve(results);
+                }
+              );
+      });
+    });
+  }
 }
 
 module.exports = Emp;
