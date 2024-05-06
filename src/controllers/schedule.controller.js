@@ -8,6 +8,17 @@ const {
   sendMailBookingTicketSuccess,
   sendMailCancelTicketSuccess,
 } = require('../mail/sendMail');
+
+exports.getSchedulesOfCinema = async (req, res) => {
+  const { cinemaId } = req.query;
+  try {
+    const results = await Schedule.getSchedulesOfCinema(cinemaId);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getSchedules = async (req, res) => {
   const { cinemaId, day, movieId } = req.query;
   console.log({ cinemaId, day, movieId });
@@ -18,6 +29,7 @@ exports.getSchedules = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 exports.getSchedulesByCinemaId = async (req, res) => {
   const { cinemaId, movieId, day } = req.query;
   try {

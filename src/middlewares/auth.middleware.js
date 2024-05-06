@@ -25,7 +25,7 @@ exports.checkAdmin = (req, res, next) => {
     if (err) {
       return next({ message: 'Token invalid' });
     }
-    if (decoded.userRole !== 'ADMIN') {
+    if (decoded.userRole !== 'ADMIN' && decoded.userRole !== 'MAN') {
       return next({ message: 'You have not permission' });
     }
     req.userId = decoded.userId;

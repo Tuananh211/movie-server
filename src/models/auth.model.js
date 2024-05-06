@@ -34,7 +34,7 @@ class User {
   static async findByEmailAdmin(email) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE email=? AND role= "ADMIN"',
+        'SELECT * FROM user WHERE email=? AND (role="ADMIN" OR role="MAN")',
         [email],
         (err, results) => {
           if (err) {
@@ -112,7 +112,7 @@ class User {
   static async getMyInformation(userId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT user.id,user.fullName,user.role,user.email,user.address,user.gender,user.dateOfBirth,user.avatar,user.cinema_id FROM user WHERE id=?',
+        'SELECT user.id,user.fullName,user.role,user.email,user.address,user.gender,user.dateOfBirth,user.avatar,user.cinema_id as cinemaId FROM user WHERE id=?',
         [userId],
         (err, results) => {
           if (err) {

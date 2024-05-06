@@ -3,7 +3,7 @@ class Emp {
   static async getEmps() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP"',
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="MAN"',
         (err, results) => {
           if (err) {
             reject(err);
@@ -32,7 +32,7 @@ class Emp {
   static async createEmp(fullName, address, email, password,cinema_id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,"EMP","1",?)',
+        'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,"MAN","1",?)',
         [fullName, address, email, password,cinema_id],
         (err, results) => {
           if (err) {
