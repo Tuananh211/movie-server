@@ -234,6 +234,20 @@ class Schedule {
       );
     });
   }
+  static async getTicketByCodeOfCinema(code,cinemaId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT user.fullName,ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,movie.time as movie_time FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id JOIN user ON user.id=ticket.user_id WHERE ticket.code=? AND cinema.id= ?',
+        [code,cinemaId],
+        (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
 
   static async receiveTicket(code) {
     return new Promise((resolve, reject) => {

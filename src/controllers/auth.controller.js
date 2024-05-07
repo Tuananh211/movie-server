@@ -222,7 +222,8 @@ exports.forgotPassword = async (req, res, next) => {
 
 exports.confirmPassword = async (req, res, next) => {
   try {
-    const { token, newPassword, confirmNewPassword } = req.body;
+    const token = req.headers.authorization.split(' ')[1];
+    const {newPassword, confirmNewPassword } = req.body;
     if (newPassword !== confirmNewPassword) {
       return res.json({
         success: false,
@@ -232,9 +233,9 @@ exports.confirmPassword = async (req, res, next) => {
       });
     }
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    const { email } = decoded;
+    const { userEmail } = decoded;
     const newHashPassword = bcrypt.hashSync(newPassword, 10);
-    await User.confirmPassword(email, newHashPassword);
+    await User.confirmPassword(userEmail, newHashPassword);
     return res.json({
       success: true,
       data: {

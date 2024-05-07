@@ -178,10 +178,10 @@ exports.getTicketByCode = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-exports.getTicketByCode = async (req, res) => {
-  const { code } = req.query;
+exports.getTicketByCodeOfCinema = async (req, res) => {
+  const { code,cinemaId } = req.query;
   try {
-    const results = await Schedule.getTicketByCode(code);
+    const results = await Schedule.getTicketByCodeOfCinema(code,cinemaId);
     return res.json(results);
   } catch (err) {
     return res.status(500).json({ message: err.message });

@@ -31,6 +31,22 @@ class Report {
         });
     }
 
+    static async getTotalTicketOfCinema(cinemaId) {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          'SELECT  COUNT(*) as totalTicket, COALESCE(SUM(value), 0) as totalValue From ticket JOIN schedule ON ticket.schedule_id = schedule.id JOIN room ON room.id=schedule.room_id WHERE room.cinema_id= ? AND is_cancel = 0 AND is_success = 1',
+          [cinemaId],
+          (err, results) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(results);
+          }
+        );
+      });
+  }
+
     static async getReport(cinemaId, fromDate, toDate) {
         return new Promise((resolve, reject) => {
           const query = cinemaId
