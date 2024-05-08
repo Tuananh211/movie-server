@@ -2,7 +2,7 @@ const express=require('express')
 
 const router=express.Router()
 const empController=require('../controllers/emp.controller')
-
+router.post('/createManager',empController.createManager)
 router.get('/:empId',empController.getEmpById)
 router.get('/',empController.getEmps)
 router.delete('/',empController.deleteEmp)

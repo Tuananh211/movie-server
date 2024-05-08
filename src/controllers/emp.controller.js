@@ -44,6 +44,32 @@ exports.createEmp = async (req, res) => {
   }
 };
 
+exports.createManager = async (req, res) => {
+  const { fullName, email, password, address,cinema_id } = req.body;
+  try {
+    const resultEmp = await Emp.findEmpByEmail(email);
+    if (resultEmp.length > 0) {
+      res.json({
+        success: false,
+        data: {
+          message: 'Email quản lý đã tồn tại',
+        },
+      });
+      return;
+    }
+    const hashPassword = bcrypt.hashSync(password, 10);
+    const results = await Emp.createManager(fullName, address, email, hashPassword,cinema_id);
+    res.json({
+      success: true,
+      data: {
+        message: 'Thêm quản lý thành công',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.createUser = async (req, res) => {
   const { fullName, email, password, address } = req.body;
   try {

@@ -28,8 +28,23 @@ class Emp {
       );
     });
   }
-
   static async createEmp(fullName, address, email, password,cinema_id) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,"EMP","1",?)',
+        [fullName, address, email, password,cinema_id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  static async createManager(fullName, address, email, password,cinema_id) {
     return new Promise((resolve, reject) => {
       connection.query(
         'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,"MAN","1",?)',
