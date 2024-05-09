@@ -31,6 +31,22 @@ class Report {
         });
     }
 
+    static async getTotalAccountOfCinema(cinema_id) {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          'SELECT user.role,COUNT(*) as totalAccount From user where cinema_id= ? group by user.role',
+          [cinema_id],
+          (err, results) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(results);
+          }
+        );
+      });
+  }
+
     static async getTotalTicketOfCinema(cinemaId) {
       return new Promise((resolve, reject) => {
         connection.query(

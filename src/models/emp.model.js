@@ -3,6 +3,36 @@ class Emp {
   static async getEmps() {
     return new Promise((resolve, reject) => {
       connection.query(
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP"',
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+  static async getListEmpsOfCinema(cinema_id) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP" AND cinema_id=?',
+        [cinema_id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  static async getManagers() {
+    return new Promise((resolve, reject) => {
+      connection.query(
         'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="MAN"',
         (err, results) => {
           if (err) {
@@ -28,11 +58,11 @@ class Emp {
       );
     });
   }
-  static async createEmp(fullName, address, email, password,cinema_id) {
+  static async createEmp(fullName, address, email, password,role,cinema_id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,"EMP","1",?)',
-        [fullName, address, email, password,cinema_id],
+        'INSERT INTO user(fullName,address,email,password,role,isVerify,cinema_id) VALUES(?,?,?,?,?,"1",?)',
+        [fullName, address, email, password,role,cinema_id],
         (err, results) => {
           if (err) {
             reject(err);
@@ -78,7 +108,7 @@ class Emp {
   static async getEmpById(empId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT fullName,address,email,password,cinema_id from user WHERE id=?',
+        'SELECT fullName,address,email,password,cinema_id,role from user WHERE id=?',
         [empId],
         (err, results) => {
           if (err) {
@@ -112,6 +142,22 @@ class Emp {
       connection.query(
         'UPDATE user SET fullName=?,address=?,email=?,password=? WHERE id=?',
         [fullName, address, email, password, id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  static async updateEmp(fullName, address, email, password,role,cinema_id, id) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE user SET fullName=?,address=?,email=?,password=?,role=?,cinema_id=? WHERE id=?',
+        [fullName, address, email, password,role,cinema_id, id],
         (err, results) => {
           if (err) {
             reject(err);

@@ -28,6 +28,15 @@ exports.getTotalUser = async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
+  exports.getTotalAccountOfCinema = async (req, res) => {
+    try {
+      const {cinemaId}=req.params;
+      const total = await Report.getTotalAccountOfCinema(cinemaId);
+      res.json(total);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
 
   exports.getReport = async (req, res) => {
     const fromDate = req.query.fromDate || '2023-01-01';

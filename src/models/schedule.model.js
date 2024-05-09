@@ -223,7 +223,7 @@ class Schedule {
   static async getTicketByCode(code) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT user.fullName,ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,movie.time as movie_time FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id JOIN user ON user.id=ticket.user_id WHERE ticket.code=?',
+        'SELECT user.fullName,ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,movie.time as movie_time FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id JOIN user ON user.id=ticket.user_id WHERE ticket.code=? AND ticket.is_cancel = 0 AND ticket.is_success = 1',
         [code],
         (err, results) => {
           if (err) {
@@ -237,7 +237,7 @@ class Schedule {
   static async getTicketByCodeOfCinema(code,cinemaId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT user.fullName,ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,movie.time as movie_time FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id JOIN user ON user.id=ticket.user_id WHERE ticket.code=? AND cinema.id= ?',
+        'SELECT user.fullName,ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,movie.time as movie_time FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id JOIN user ON user.id=ticket.user_id WHERE ticket.code=? AND cinema.id= ? AND ticket.is_cancel = 0 AND ticket.is_success = 1',
         [code,cinemaId],
         (err, results) => {
           if (err) {

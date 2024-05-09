@@ -34,7 +34,7 @@ class User {
   static async findByEmailAdmin(email) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE email=? AND (role="ADMIN" OR role="MAN")',
+        'SELECT * FROM user WHERE email=? AND (role="ADMIN" OR role="MAN" OR role="EMP")',
         [email],
         (err, results) => {
           if (err) {

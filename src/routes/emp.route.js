@@ -2,6 +2,9 @@ const express=require('express')
 
 const router=express.Router()
 const empController=require('../controllers/emp.controller')
+
+router.get('/empsOfCinema/:cinema_id',empController.getListEmpsOfCinema)
+router.get('/getListMana',empController.getListManager)
 router.post('/createManager',empController.createManager)
 router.get('/:empId',empController.getEmpById)
 router.get('/',empController.getEmps)

@@ -9,6 +9,23 @@ exports.getEmps = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getListManager = async (req, res) => {
+  try {
+    const emps = await Emp.getManagers();
+    res.json(emps);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.getListEmpsOfCinema = async (req, res) => {
+  try {
+    const cinema_id= req.params;
+    const emps = await Emp.getListEmpsOfCinema(cinema_id);
+    res.json(emps);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 exports.getListUser = async (req, res) => {
   try {
     console.log(1)
@@ -19,20 +36,20 @@ exports.getListUser = async (req, res) => {
   }
 };
 exports.createEmp = async (req, res) => {
-  const { fullName, email, password, address,cinema_id } = req.body;
+  const { fullName, email, password, address,role,cinema_id } = req.body;
   try {
     const resultEmp = await Emp.findEmpByEmail(email);
     if (resultEmp.length > 0) {
       res.json({
         success: false,
         data: {
-          message: 'Email nhân viên đã tồn tại',
+          message: 'Email đã được sử dụng',
         },
       });
       return;
     }
     const hashPassword = bcrypt.hashSync(password, 10);
-    const results = await Emp.createEmp(fullName, address, email, hashPassword,cinema_id);
+    const results = await Emp.createEmp(fullName, address, email, hashPassword,role,cinema_id);
     res.json({
       success: true,
       data: {
@@ -106,22 +123,24 @@ exports.getEmpById = async (req, res) => {
   }
 };
 exports.updateEmp = async (req, res) => {
-  const { id, fullName, email, password, address } = req.body;
+  const { id, fullName, email, password, address,role,cinema_id } = req.body;
 
   try {
     const emp= await Emp.getEmpById(id)
-    const existEmp = users[0];
+    const existEmp = emp[0];
     const isPassword = bcrypt.compareSync(password,existEmp.password);
-  
+    let hashedPassword;
     if(!isPassword){
-        password= bcrypt.hashSync(password, 10)
+      hashedPassword= bcrypt.hashSync(password, 10)
     }
-    
-    const results = await Emp.update(fullName, address, email, password, id);
+    else{
+      hashedPassword = password;
+    }
+    const results = await Emp.updateEmp(fullName, address, email, hashedPassword,role,cinema_id, id);
     res.json({
       success: true,
       data: {
-        message: 'Cập nhật nhân viên thành công',
+        message: 'Cập nhật thành công',
       },
     });
   } catch (err) {
