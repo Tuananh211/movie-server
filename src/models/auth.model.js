@@ -179,6 +179,21 @@ class User {
       );
     });
   }
+  static async getMyTicketsOfMovie(userId,movieId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT ticket.id,ticket.value,ticket.created_date,ticket.code,ticket.status,ticket.is_cancel,ticket_detail.chair_id,chair.xPosition,cinema.name as cinema, chair.yPosition,schedule.premiere,room.name as room,movie.name as movie,product.name as product_name,ticket_product.quantity as product_quantity,product.id as product_id FROM ticket JOIN ticket_detail ON ticket_detail.ticket_id=ticket.id JOIN schedule ON schedule.id=ticket.schedule_id JOIN room ON room.id=schedule.room_id JOIN movie ON movie.id=schedule.movie_id JOIN chair ON chair.id=ticket_detail.chair_id JOIN cinema ON cinema.id=room.cinema_id LEFT JOIN ticket_product ON ticket_product.ticket_id=ticket.id LEFT JOIN product on ticket_product.product_id=product.id WHERE user_id=? AND is_success = 1 AND movie.id=?',
+        [userId,movieId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
 }
 
 module.exports = User;

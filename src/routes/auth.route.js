@@ -10,6 +10,7 @@ router.post('/changePassword', checkLogin, authController.changePassword);
 router.post('/forgotPassword', authController.forgotPassword);
 router.post('/confirmPassword', authController.confirmPassword);
 // router.post('/send-verify-token',authController.register)
+router.get('/getMyTicketOfMovie',checkLogin,authController.getMyTicketsOfMovie)
 router.get('/verify-email', authController.verifyEmail);
 router.get('/information', checkLogin, authController.getMyInformation);
 router.put('/information', checkLogin, authController.updateMyInformation);

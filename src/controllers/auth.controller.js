@@ -318,9 +318,58 @@ exports.updateMyInformation = async (req, res) => {
 
 exports.getMyTickets = async (req, res) => {
   const { userId } = req;
+  console.log(userId)
   const { handle } = req.query;
   try {
     const result = await User.getMyTickets(userId);
+    if (!handle) {
+      res.json(result);
+    } else {
+      const response = [];
+      const ticketId = [];
+      result.forEach(ticket => {
+        if (!ticketId.includes(ticket.id)) {
+          ticketId.push(ticket.id);
+        }
+      });
+      for (let i = 0; i < ticketId.length; i++) {
+        const allTicketDetail = result.filter(r => r.id === ticketId[i]);
+        let ticketIndex = { ...allTicketDetail[0] };
+        const allChairs = allTicketDetail.map(
+          ticket => `${ticket.xPosition}${ticket.yPosition}`
+        );
+        ticketIndex.chairs = [...new Set(allChairs)];
+        const products = [];
+        allTicketDetail.forEach(ticketDetail => {
+          if (
+            !products.find(product => product.id === ticketDetail.product_id) &&
+            ticketDetail.product_id
+          ) {
+            products.push({
+              id: ticketDetail.product_id,
+              name: ticketDetail.product_name,
+              quantity: ticketDetail.product_quantity,
+            });
+          }
+        });
+        ticketIndex.products = products;
+        response.push(ticketIndex);
+      }
+      response.sort(
+        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+      );
+      res.json(response);
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getMyTicketsOfMovie = async (req, res) => {
+  const {userId}= req
+  const { handle,movieId } = req.query;
+  try {
+    const result = await User.getMyTicketsOfMovie(userId,movieId);
     if (!handle) {
       res.json(result);
     } else {
