@@ -318,7 +318,6 @@ exports.updateMyInformation = async (req, res) => {
 
 exports.getMyTickets = async (req, res) => {
   const { userId } = req;
-  console.log(userId)
   const { handle } = req.query;
   try {
     const result = await User.getMyTickets(userId);
