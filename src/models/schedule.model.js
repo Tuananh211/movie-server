@@ -65,6 +65,47 @@ class Schedule {
     });
   }
 
+  static async getSchedulesByCinemaAndDate(day, roomId) {
+    return new Promise((resolve, reject) => {
+      const query =
+        'SELECT schedule.*, room.name as roomName, cinema.name as cinemaName FROM movie_system.schedule JOIN room on room.id=schedule.room_id JOIN cinema on cinema.id=room.cinema_id WHERE schedule.room_id=? AND schedule.premiere=? ORDER BY schedule.premiere ASC';
+      const params = [roomId, day];
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  static async getCurrentSchedule(day, roomId) {
+    return new Promise((resolve, reject) => {
+      console.log(1)
+      const query =
+        `SELECT schedule.*, room.name as roomName, cinema.name as cinemaName, movie.name 
+        FROM movie_system.schedule 
+        JOIN room ON room.id = schedule.room_id
+        JOIN cinema ON cinema.id = room.cinema_id
+        JOIN movie ON movie.id = schedule.movie_id 
+        WHERE schedule.room_id = ? 
+        AND schedule.premiere <= ?
+        AND ADDTIME(schedule.premiere,SEC_TO_TIME(movie.time * 60)) >= ?
+        ORDER BY schedule.premiere ASC`;
+      const params = [roomId, day, day];
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+        console.log(results)
+      });
+    });
+  }
+
+
   static async getScheduleById(scheduleId) {
     return new Promise((resolve, reject) => {
       connection.query(

@@ -269,6 +269,25 @@ exports.getTimeTypeSchedule = async (req, res) => {
 exports.createSchedule = async (req, res) => {
   const { roomId, movieId, premiere } = req.body;
   try {
+    const scheduleResult = await Schedule.getSchedulesByCinemaAndDate(premiere,roomId);
+    if (scheduleResult.length > 0) {
+      return res.json({
+        success: false,
+        data: {
+          message: `Phòng này vào ${moment(premiere).format('HH:mm DD-MM-YYYY')} đã có lịch chiếu`,
+        },
+      });
+    }
+
+    const currentScheduleResult = await Schedule.getCurrentSchedule(premiere,roomId);
+    if (currentScheduleResult.length > 0) {
+      return res.json({
+        success: false,
+        data: {
+          message: `Phòng này vào ${moment(premiere).format('HH:mm DD-MM-YYYY')} đang chiếu phim ${currentScheduleResult[0].name}`,
+        },
+      })
+    }
     const results = await Schedule.createSchedule(roomId, movieId, premiere);
     return res.json({
       success: true,
