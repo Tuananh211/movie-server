@@ -36,7 +36,7 @@ exports.login = async (req, res, next) => {
           userRole: user.role,
         },
         process.env.TOKEN_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '30d' }
       );
       res.json({
         accessToken: token,
@@ -76,7 +76,7 @@ exports.loginAdmin = async (req, res, next) => {
           userRole: user.role,
         },
         process.env.TOKEN_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '30d' }
       );
       res.json({
         accessToken: token,
