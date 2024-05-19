@@ -304,6 +304,27 @@ exports.updateSchedule = async (req, res) => {
   const { id, roomId, movieId, premiere } = req.body;
 
   try {
+     // Check for existing schedules at the given premiere time
+     const scheduleResult = await Schedule.getSchedulesByCinemaAndDate(premiere, roomId);
+     if (scheduleResult.length > 0 && scheduleResult[0].id !== Number(id)) {
+       return res.json({
+         success: false,
+         data: {
+           message: `Phòng này vào ${moment(premiere).format('HH:mm DD-MM-YYYY')} đã có lịch chiếu`,
+         },
+       });
+     }
+ 
+     // Check if the room is currently showing another movie at the given time
+     const currentScheduleResult = await Schedule.getCurrentSchedule(premiere, roomId);
+     if (currentScheduleResult.length > 0 && currentScheduleResult[0].id !== Number(id)) {
+       return res.json({
+         success: false,
+         data: {
+           message: `Phòng này vào ${moment(premiere).format('HH:mm DD-MM-YYYY')} đang chiếu phim ${currentScheduleResult[0].name}`,
+         },
+       });
+     }
     const results = await Schedule.updateSchedule(
       roomId,
       movieId,

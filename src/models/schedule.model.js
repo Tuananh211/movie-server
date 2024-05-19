@@ -82,7 +82,6 @@ class Schedule {
 
   static async getCurrentSchedule(day, roomId) {
     return new Promise((resolve, reject) => {
-      console.log(1)
       const query =
         `SELECT schedule.*, room.name as roomName, cinema.name as cinemaName, movie.name 
         FROM movie_system.schedule 
@@ -100,7 +99,6 @@ class Schedule {
           return;
         }
         resolve(results);
-        console.log(results)
       });
     });
   }

@@ -56,7 +56,7 @@ exports.loginAdmin = async (req, res, next) => {
     const results = await User.findByEmailAdmin(email);
     const user = results[0];
     if (!user) {
-      return res.status(401).json({ message: 'Đăng nhập thất bại' });
+      return res.status(401).json({ message: 'Tài khoản không có quyền truy cập' });
     }
     if (user && !user?.isVerify) {
       return res.status(401).json({ message: 'Tài khoản chưa được xác minh' });
