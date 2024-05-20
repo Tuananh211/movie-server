@@ -21,6 +21,69 @@ class Schedule {
       });
     });
   }
+  static async getScheduleByCinemaAndMovie(cinemaId, movieId) {
+    return new Promise((resolve, reject) => {
+      let query =
+        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? ORDER BY schedule.premiere DESC';
+        if (cinemaId!==null && movieId==null) {
+          query =
+            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id=? ORDER BY schedule.premiere DESC';
+        }  
+      if (cinemaId && movieId) {
+        query =
+          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND room.cinema_id=? ORDER BY schedule.premiere DESC';
+      }
+      let params = [];
+      if (cinemaId==null && movieId!==null) {
+        params = [movieId];
+      }
+      if (cinemaId!==null && movieId==null) {
+        params = [cinemaId];
+      }
+      if (cinemaId && movieId) {
+        params = [movieId, cinemaId];
+      }
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  static async getScheduleByRoomAndMovie(roomId, movieId) {
+    return new Promise((resolve, reject) => {
+      let query =
+        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? ORDER BY schedule.premiere DESC';
+        if (roomId!==null && movieId==null) {
+          query =
+            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.room_id=? ORDER BY schedule.premiere DESC';
+        }  
+      if (roomId && movieId) {
+        query =
+          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND schedule.room_id=? ORDER BY schedule.premiere DESC';
+      }
+      let params = [];
+      if (roomId==null && movieId!==null) {
+        params = [movieId];
+      }
+      if (roomId!==null && movieId==null) {
+        params = [roomId];
+      }
+      if (roomId && movieId) {
+        params = [movieId, roomId];
+      }
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+    });
+  }
   static async getScheduleByCinemaId(cinemaId,movieId,day) {
     return new Promise((resolve, reject) => {
       const query =
@@ -35,6 +98,7 @@ class Schedule {
       });
     });
   }
+
   static async getSchedulesOfCinema(cinemaId) {
     return new Promise((resolve, reject) => {
       const query =

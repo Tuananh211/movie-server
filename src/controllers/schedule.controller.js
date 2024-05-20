@@ -30,6 +30,28 @@ exports.getSchedules = async (req, res) => {
   }
 };
 
+exports.getSchedulesByMovieAndCinema = async (req, res) => {
+  const { cinemaId, movieId } = req.query;
+  console.log({ cinemaId, movieId });
+  try {
+    const results = await Schedule.getScheduleByCinemaAndMovie(cinemaId, movieId);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getSchedulesByRoomAndCinema = async (req, res) => {
+  const { roomId, movieId } = req.query;
+  console.log({ roomId, movieId });
+  try {
+    const results = await Schedule.getScheduleByRoomAndMovie(roomId, movieId);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getSchedulesByCinemaId = async (req, res) => {
   const { cinemaId, movieId, day } = req.query;
   try {

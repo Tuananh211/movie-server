@@ -4,6 +4,8 @@ const router = express.Router();
 const scheduleController = require('../controllers/schedule.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 
+router.get('/ticketByRoomAndMovie',scheduleController.getSchedulesByRoomAndCinema)
+router.get('/ticketByCinemaAndMovie',scheduleController.getSchedulesByMovieAndCinema)
 router.get('/ticketByCodeOfCinema',scheduleController.getTicketByCodeOfCinema)
 router.get('/getScheduleOfCinema',scheduleController.getSchedulesOfCinema)
 router.get('/allChairs', scheduleController.getAllChairs);
