@@ -240,6 +240,8 @@ class Schedule {
                  ORDER BY date_only`;
         params = [fromDate, toDate];
       }
+      console.log(query)
+      console.log(params)
       connection.query(query, params, (err, results) => {
         if (err) {
           return reject(err);

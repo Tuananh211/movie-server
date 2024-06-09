@@ -101,7 +101,11 @@ exports.getAmount = async (req, res) => {
 };
 exports.getReport = async (req, res) => {
   const fromDate = req.query.fromDate || '2023-01-01';
-  const toDate = req.query.toDate || new Date().toISOString().split('T')[0];
+  const toDate = req.query.toDate || (() => {
+    let today = new Date();
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split('T')[0];
+})();
   const movieId = req.query.movieId;
   const cinemaId = req.query.cinemaId;
 
