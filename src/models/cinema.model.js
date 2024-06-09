@@ -62,11 +62,11 @@ class Cinema {
     });
   }
 
-  static createCinema(name, address) {
+  static createCinema(name, address,cityId,phone,urlImage) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'INSERT INTO cinema(name,address) VALUES(?,?)',
-        [name, address],
+        'INSERT INTO cinema(name,address,city_id,phone,urlImage) VALUES(?,?,?,?,?)',
+        [name, address,cityId,phone,urlImage],
         (err, results) => {
           if (err) {
             return reject(err);
@@ -77,11 +77,11 @@ class Cinema {
     });
   }
 
-  static update(id, name, address) {
+  static update(id, name, address,phone,urlImage) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE cinema SET name=?,address=? WHERE id=?',
-        [name, address, id],
+        'UPDATE cinema SET name=?,address=?,phone=?,urlImage=? WHERE id=?',
+        [name, address,phone,urlImage, id],
         (err, results) => {
           if (err) {
             reject(err);
@@ -161,7 +161,7 @@ class Cinema {
   static async findCinemaByName(name, address) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT name FROM cinema WHERE name=? AND city_id=1 AND address= ?',
+        'SELECT id,name FROM cinema WHERE name=? AND city_id=1 AND address= ?',
         [name, address],
         (err, results) => {
           if (err) {

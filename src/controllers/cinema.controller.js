@@ -37,7 +37,7 @@ exports.getCinemaById2 = async (req, res) => {
   }
 };
 exports.createCinema = async (req, res) => {
-  const { name, address } = req.body;
+  const { name, address,cityId,phone,urlImage } = req.body;
   try {
     const cinemaResult = await Cinema.findCinemaByName(name, address);
     if (cinemaResult.length > 0) {
@@ -49,7 +49,7 @@ exports.createCinema = async (req, res) => {
       });
       return;
     }
-    const results = await Cinema.createCinema(name, address);
+    const results = await Cinema.createCinema(name, address,cityId,phone,urlImage);
     res.json({
       success: true,
       data: {
@@ -63,9 +63,9 @@ exports.createCinema = async (req, res) => {
 
 exports.updateCinema = async (req, res) => {
   try {
-    const { id, name, address } = req.body;
+    const { id, name, address,phone,urlImage } = req.body;
     const cinemaResult = await Cinema.findCinemaByName(name, address);
-    if (cinemaResult.length > 0) {
+    if (cinemaResult.length > 0 && cinemaResult[0].id != id) {
       res.json({
         success: false,
         data: {
@@ -75,7 +75,7 @@ exports.updateCinema = async (req, res) => {
       return;
     }
 
-    const results = await Cinema.update(id, name, address);
+    const results = await Cinema.update(id, name, address,phone,urlImage);
     res.json({
       success: true,
       data: {
