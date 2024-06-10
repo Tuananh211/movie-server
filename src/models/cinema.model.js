@@ -217,5 +217,37 @@ class Cinema {
       );
     });
   }
+
+  static async updateRoom(roomName, roomId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE room SET name= ? where id = ?',
+        [roomName, roomId],
+        (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  static deleteRoom(id) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'DELETE FROM room  WHERE id=?',
+        [id],
+        (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+            resolve(results);
+        }
+      );
+    });
+  }
+
+
 }
 module.exports = Cinema;

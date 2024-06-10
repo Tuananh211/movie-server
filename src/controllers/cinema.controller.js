@@ -166,3 +166,47 @@ exports.addRoom = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+exports.updateRoom = async (req, res) => {
+  const { roomName, roomId,cinemaId } = req.body;
+  try {
+    const roomResult = await Cinema.findRoomByName(roomName, cinemaId);
+
+    if (roomResult.length > 0 && roomResult[0].id!=roomId) {
+      res.json({
+        success: false,
+        data: {
+          message: 'Tên phòng không được trùng nhau',
+        },
+      });
+      return;
+    }
+
+    const results = await Cinema.updateRoom(roomName, roomId);
+    res.json({
+      success: true,
+      data: {
+        message: 'Cập nhật phòng thành công',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.deleteRoom = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const results = await Cinema.deleteRoom(id);
+    res.json({
+      success: true,
+      data: {
+        message: 'Xóa rạp thành công',
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

@@ -2,6 +2,9 @@ const express=require('express')
 const authMiddleware = require('../middlewares/auth.middleware');
 const router=express.Router()
 const cinemaController=require('../controllers/cinema.controller')
+
+router.put('/updateRoom',authMiddleware.checkAdmin,cinemaController.updateRoom)
+router.delete('/deleteRoom',authMiddleware.checkAdmin,cinemaController.deleteRoom)
 router.get('/:cinemaId/rooms',authMiddleware.checkLogin,cinemaController.getRoomsByCinemaId)
 router.get('/cinemaByCityId/:cityId',authMiddleware.checkLogin,cinemaController.getCinemaByCityId)
 router.get('/rooms/:roomId',authMiddleware.checkLogin,cinemaController.getCinemaByRoomId)
