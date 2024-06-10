@@ -236,13 +236,23 @@ class Cinema {
   static deleteRoom(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'DELETE FROM room  WHERE id=?',
+        'DELETE FROM room WHERE movie_id = ?',
         [id],
         (err, results) => {
           if (err) {
             return reject(err);
           }
-            resolve(results);
+  
+          connection.query(
+            'DELETE FROM cinema WHERE id = ?',
+            [id],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(results);
+            }
+          );
         }
       );
     });
