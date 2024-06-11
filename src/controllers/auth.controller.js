@@ -17,6 +17,9 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return next({ message: 'Đăng nhập thất bại' });
     }
+    if(user && user.is_active==1){
+      return next({ message: 'Tài khoản không tồn tại' });
+    }
     if (user && !user?.isVerify) {
       return next({ message: 'Tài khoản chưa được xác minh' });
     }
@@ -57,6 +60,9 @@ exports.loginAdmin = async (req, res, next) => {
     const user = results[0];
     if (!user) {
       return res.status(401).json({ message: 'Tài khoản không có quyền truy cập' });
+    }
+    if(user.is_active==0){
+      return res.status(401).json({ message: 'Tài khoản không tồn tại' });
     }
     if (user && !user?.isVerify) {
       return res.status(401).json({ message: 'Tài khoản chưa được xác minh' });

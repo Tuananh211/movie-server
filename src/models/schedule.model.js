@@ -3,10 +3,10 @@ class Schedule {
   static async getSchedule(cinemaId, day, movieId) {
     return new Promise((resolve, reject) => {
       let query =
-        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id ORDER BY schedule.premiere DESC';
+        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.is_delete=0 ORDER BY schedule.premiere DESC';
       if (cinemaId && day && movieId) {
         query =
-          'SELECT schedule.*,room.name as room_name FROM schedule JOIN room ON room.id=schedule.room_id WHERE schedule.movie_id=? AND room.cinema_id=? AND DATE(schedule.premiere)=? ORDER BY schedule.premiere DESC';
+          'SELECT schedule.*,room.name as room_name FROM schedule JOIN room ON room.id=schedule.room_id WHERE schedule.movie_id=? AND room.cinema_id=? AND DATE(schedule.premiere)=? AND schedule.is_delete = 0 ORDER BY schedule.premiere DESC';
       }
       let params = [];
       if (cinemaId && day && movieId) {
@@ -24,14 +24,14 @@ class Schedule {
   static async getScheduleByCinemaAndMovie(cinemaId, movieId) {
     return new Promise((resolve, reject) => {
       let query =
-        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? ORDER BY schedule.premiere DESC';
+        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
         if (cinemaId!==null && movieId==null) {
           query =
-            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id=? ORDER BY schedule.premiere DESC';
+            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id=? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
         }  
       if (cinemaId && movieId) {
         query =
-          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND room.cinema_id=? ORDER BY schedule.premiere DESC';
+          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND room.cinema_id=? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
       }
       let params = [];
       if (cinemaId==null && movieId!==null) {
@@ -56,14 +56,14 @@ class Schedule {
   static async getScheduleByRoomAndMovie(roomId, movieId) {
     return new Promise((resolve, reject) => {
       let query =
-        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? ORDER BY schedule.premiere DESC';
+        'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.movie_id=? AND schedule.is_delete= 0ORDER BY schedule.premiere DESC';
         if (roomId!==null && movieId==null) {
           query =
-            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.room_id=? ORDER BY schedule.premiere DESC';
+            'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE schedule.room_id=? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
         }  
       if (roomId && movieId) {
         query =
-          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND schedule.room_id=? ORDER BY schedule.premiere DESC';
+          'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id  WHERE schedule.movie_id=? AND schedule.room_id=? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
       }
       let params = [];
       if (roomId==null && movieId!==null) {
@@ -87,7 +87,7 @@ class Schedule {
   static async getScheduleByCinemaId(cinemaId,movieId,day) {
     return new Promise((resolve, reject) => {
       const query =
-      'SELECT schedule.*,room.name as room FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id= ? AND schedule.movie_id = ? AND DATE(schedule.premiere) = ? ORDER BY schedule.premiere DESC';
+      'SELECT schedule.*,room.name as room FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE room.cinema_id= ? AND schedule.movie_id = ? AND DATE(schedule.premiere) = ? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
       const params=[cinemaId,movieId,day]
       connection.query(query, params, (err, results) => {
         if (err) {
@@ -102,7 +102,7 @@ class Schedule {
   static async getSchedulesOfCinema(cinemaId) {
     return new Promise((resolve, reject) => {
       const query =
-      'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE cinema.id = ? ORDER BY schedule.premiere DESC';
+      'SELECT schedule.id,schedule.premiere,room.name as room,cinema.name as cinema,city.name as city,movie.name as movie FROM schedule JOIN room on schedule.room_id=room.id JOIN movie on schedule.movie_id=movie.id JOIN cinema on room.cinema_id=cinema.id JOIN city on cinema.city_id =city.id WHERE cinema.id = ? AND schedule.is_delete=0 ORDER BY schedule.premiere DESC';
       const params=[cinemaId]
       connection.query(query, params, (err, results) => {
         if (err) {
@@ -117,7 +117,7 @@ class Schedule {
   static async getSchedulesOfMovieByDate(day, movieId) {
     return new Promise((resolve, reject) => {
       const query =
-        'SELECT schedule.*, room.name as roomName, cinema.name as cinemaName FROM movie_system.schedule JOIN room on room.id=schedule.room_id JOIN cinema on cinema.id=room.cinema_id WHERE schedule.movie_id=? AND DATE(schedule.premiere)=? ORDER BY schedule.premiere ASC';
+        'SELECT schedule.*, room.name as roomName, cinema.name as cinemaName FROM movie_system.schedule JOIN room on room.id=schedule.room_id JOIN cinema on cinema.id=room.cinema_id WHERE schedule.movie_id=? AND DATE(schedule.premiere)=? AND schedule.is_delete=0 ORDER BY schedule.premiere ASC';
       const params = [movieId, day];
       connection.query(query, params, (err, results) => {
         if (err) {
@@ -132,7 +132,7 @@ class Schedule {
   static async getSchedulesByCinemaAndDate(day, roomId) {
     return new Promise((resolve, reject) => {
       const query =
-        'SELECT schedule.*, room.name as roomName, cinema.name as cinemaName FROM movie_system.schedule JOIN room on room.id=schedule.room_id JOIN cinema on cinema.id=room.cinema_id WHERE schedule.room_id=? AND schedule.premiere=? ORDER BY schedule.premiere ASC';
+        'SELECT schedule.*, room.name as roomName, cinema.name as cinemaName FROM movie_system.schedule JOIN room on room.id=schedule.room_id JOIN cinema on cinema.id=room.cinema_id WHERE schedule.room_id=? AND schedule.premiere=? AND schedule.is_delete=0 ORDER BY schedule.premiere ASC';
       const params = [roomId, day];
       connection.query(query, params, (err, results) => {
         if (err) {
@@ -155,6 +155,7 @@ class Schedule {
         WHERE schedule.room_id = ? 
         AND schedule.premiere <= ?
         AND ADDTIME(schedule.premiere,SEC_TO_TIME(movie.time * 60)) >= ?
+        AND schedule.is_delete=0
         ORDER BY schedule.premiere ASC`;
       const params = [roomId, day, day];
       connection.query(query, params, (err, results) => {
@@ -445,7 +446,7 @@ class Schedule {
   static async deleteSchedule(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'DELETE FROM schedule WHERE id =?',
+        'UPDATE schedule SET is_delete = 1 WHERE id =?',
         [id],
         (err, results) => {
           if (err) {

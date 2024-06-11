@@ -3,7 +3,7 @@ class Emp {
   static async getEmps() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP"',
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP" AND is_active=1',
         (err, results) => {
           if (err) {
             reject(err);
@@ -17,7 +17,7 @@ class Emp {
   static async getListEmpsOfCinema(cinema_id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP" AND cinema_id=?',
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="EMP" AND cinema_id=? AND is_active=1',
         [cinema_id],
         (err, results) => {
           if (err) {
@@ -33,7 +33,7 @@ class Emp {
   static async getManagers() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="MAN"',
+        'SELECT u.*,c.name as cinema_name FROM user u JOIN cinema c ON c.id = u.cinema_id WHERE role="MAN" AND is_active=1',
         (err, results) => {
           if (err) {
             reject(err);
@@ -47,7 +47,7 @@ class Emp {
   static async getUsers() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE role="USER"',
+        'SELECT * FROM user WHERE role="USER" AND is_active=1',
         (err, results) => {
           if (err) {
             reject(err);
@@ -108,7 +108,7 @@ class Emp {
   static async getEmpById(empId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT fullName,address,email,password,cinema_id,role from user WHERE id=?',
+        'SELECT fullName,address,email,password,cinema_id,role from user WHERE id=? AND is_active=1',
         [empId],
         (err, results) => {
           if (err) {
@@ -124,7 +124,7 @@ class Emp {
   static async findEmpByEmail(email) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT email from user WHERE email=?',
+        'SELECT email from user WHERE email=? AND is_active=1',
         [email],
         (err, results) => {
           if (err) {
@@ -202,7 +202,7 @@ class Emp {
 
   static async delete(id) {
     return new Promise((resolve, reject) => {
-      connection.query('DELETE FROM user WHERE id=?', [id], (err, results) => {
+      connection.query('UPDATE user SET is_active= 0  WHERE id=?', [id], (err, results) => {
         if (err) {
           reject(err);
           return;
@@ -214,13 +214,13 @@ class Emp {
 
   static async deleteUser(id) {
     return new Promise((resolve, reject) => {
-      connection.query('DELETE FROM comment WHERE user_id=?', [id], (err, results) => {
+      connection.query('DELETE FROM comments WHERE user_id=?', [id], (err, results) => {
         if (err) {
           reject(err);
           return;
         }
         connection.query(
-                'DELETE FROM user WHERE id=?',
+                'UPDATE user SET is_active = 0  WHERE id=?',
                 [id],
                 (err, results) => {
                   if (err) {

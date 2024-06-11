@@ -9,6 +9,7 @@ class Movie {
         JOIN format f ON f.id = m.format_id 
         JOIN director d ON d.id = m.director 
         LEFT JOIN comments c ON m.id = c.movie_id
+        WHERE m.is_delete=0
         GROUP BY m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
         ORDER BY rate DESC, m.timeRelease DESC`,
         (err, results) => {
@@ -137,6 +138,7 @@ static async getMoviesByCategoryId(categoryId) {
               LEFT JOIN comments c ON m.id = c.movie_id
           WHERE 
               mv.category_id = ?
+              m.is_delete=0
           GROUP BY
               m.id
           ORDER BY rate DESC, m.timeRelease DESC
@@ -179,6 +181,7 @@ static async getMoviesByName(nameMovie) {
               LEFT JOIN comments c ON m.id = c.movie_id
           WHERE 
               LOWER(m.name) LIKE LOWER(?)
+              AND m.is_delete = 0
           GROUP BY
               m.id, m.name, m.description, d.name, d.image, m.image, m.view, m.ageLimit, m.timeRelease, m.time, m.trailer, l.name, f.name
           ORDER BY rate DESC, m.timeRelease DESC
@@ -454,7 +457,7 @@ static async getMoviesByName(nameMovie) {
   
               // Tiếp tục xóa bản ghi trong bảng movie
               connection.query(
-                'DELETE FROM movie WHERE id=?',
+                'UPDATE movie SET is_delete=1 WHERE id=?',
                 [id],
                 (err, results) => {
                   if (err) {

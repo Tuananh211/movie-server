@@ -4,7 +4,7 @@ class User {
   static async findByEmailAndPassword(email, password) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE email=? AND password=?',
+        'SELECT * FROM user WHERE email=? AND password=? AND is_active=1',
         [email, password],
         (err, results) => {
           if (err) {
@@ -49,7 +49,7 @@ class User {
   static async findById(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM user WHERE id=?',
+        'SELECT * FROM user WHERE id=? AND is_active =1',
         [id],
         (err, results) => {
           if (err) {
@@ -65,7 +65,7 @@ class User {
   static async confirmPassword(email, newPassword) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE user SET password = ? WHERE email=?',
+        'UPDATE user SET password = ? WHERE email=? AND is_active=1',
         [newPassword, email],
         (err, results) => {
           if (err) {
@@ -80,7 +80,7 @@ class User {
   static async verifyEmail(email) {
     return new Promise((resolve, reject) => {
       connection.query(
-        "UPDATE user SET isVerify = '1' WHERE email=?",
+        "UPDATE user SET isVerify = '1' WHERE email=? AND is_active=1",
         [email],
         (err, results) => {
           if (err) {
@@ -112,7 +112,7 @@ class User {
   static async getMyInformation(userId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT user.id,user.fullName,user.role,user.email,user.address,user.gender,user.dateOfBirth,user.avatar,user.cinema_id as cinemaId FROM user WHERE id=?',
+        'SELECT user.id,user.fullName,user.role,user.email,user.address,user.gender,user.dateOfBirth,user.avatar,user.cinema_id as cinemaId FROM user WHERE id=? AND is_active=1',
         [userId],
         (err, results) => {
           if (err) {
@@ -135,7 +135,7 @@ class User {
   ) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE user SET fullName=?,dateOfBirth=?,address=?,avatar=?,gender=? WHERE id=?',
+        'UPDATE user SET fullName=?,dateOfBirth=?,address=?,avatar=?,gender=? WHERE id=? AND is_active=1',
         [name, dateOfBirth, address, avatar, gender, userId],
         (err, results) => {
           if (err) {
@@ -151,7 +151,7 @@ class User {
   static async changePassword(password, userId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'UPDATE user SET password=? WHERE id=?',
+        'UPDATE user SET password=? WHERE id=? AND is_active=1',
         [password, userId],
         (err, results) => {
           if (err) {

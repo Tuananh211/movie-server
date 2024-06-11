@@ -3,7 +3,7 @@ class Cinema {
   static async getCinemas() {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT cinema.id,cinema.name,city.name as city,cinema.address,cinema.phone,cinema.urlImage FROM cinema JOIN city ON cinema.city_id=city.id',
+        'SELECT cinema.id,cinema.name,city.name as city,cinema.address,cinema.phone,cinema.urlImage FROM cinema JOIN city ON cinema.city_id=city.id WHERE cinema.is_delete=0',
         (err, results) => {
           if (err) {
             reject(err);
@@ -33,7 +33,7 @@ class Cinema {
   static async getCinemaById(cinemaId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT cinema.id,cinema.name,city.id as city_id,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id where cinema.id=?',
+        'SELECT cinema.id,cinema.name,city.id as city_id,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id where cinema.id=? and cinema.is_delete=0',
         [cinemaId],
         (err, results) => {
           if (err) {
@@ -49,7 +49,7 @@ class Cinema {
   static async getCinemaById2(cinemaId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT cinema.*,city.id as city_id,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id where cinema.id=?',
+        'SELECT cinema.*,city.id as city_id,city.name as city FROM cinema JOIN city ON cinema.city_id=city.id where cinema.id=? AND cinema.is_delete=0',
         [cinemaId],
         (err, results) => {
           if (err) {
@@ -96,14 +96,14 @@ class Cinema {
   static deleteCinema(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'DELETE FROM room  WHERE cinema_id=?',
+        'UPDATE room SET is_delete=1  WHERE cinema_id=?',
         [id],
         (err, results) => {
           if (err) {
             return reject(err);
           }
           connection.query(
-            'DELETE FROM cinema  WHERE id=?',
+            'UPDATE  cinema SET is_delete=1  WHERE id=?',
             [id],
             (err, results) => {
               if (err) {
@@ -131,7 +131,7 @@ class Cinema {
   static async getRoomsByCinemaId(cinemaId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM room WHERE cinema_id=?',
+        'SELECT * FROM room WHERE cinema_id=? AND is_delete=0',
         [cinemaId],
         (err, results) => {
           if (err) {
@@ -146,7 +146,7 @@ class Cinema {
   static async getCinemaByCityId(cityId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM cinema WHERE city_id=?',
+        'SELECT * FROM cinema WHERE city_id=? and is_delete=0',
         [cityId],
         (err, results) => {
           if (err) {
@@ -161,7 +161,7 @@ class Cinema {
   static async findCinemaByName(name, address) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT id,name FROM cinema WHERE name=? AND city_id=1 AND address= ?',
+        'SELECT id,name FROM cinema WHERE name=? AND city_id=1 AND address= ? AND is_delete =0',
         [name, address],
         (err, results) => {
           if (err) {
@@ -206,7 +206,7 @@ class Cinema {
   static async findRoomByName(roomName, cinemaId) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT name FROM room WHERE name= ? AND cinema_id=?',
+        'SELECT name FROM room WHERE name= ? AND cinema_id=? AND is_delete=0 ',
         [roomName, cinemaId],
         (err, results) => {
           if (err) {
@@ -236,23 +236,13 @@ class Cinema {
   static deleteRoom(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        'DELETE FROM room WHERE movie_id = ?',
+        'UPDATE  room  SET is_delete=1 WHERE id=?',
         [id],
         (err, results) => {
           if (err) {
             return reject(err);
           }
-  
-          connection.query(
-            'DELETE FROM cinema WHERE id = ?',
-            [id],
-            (err, results) => {
-              if (err) {
-                return reject(err);
-              }
-              resolve(results);
-            }
-          );
+            resolve(results);
         }
       );
     });
